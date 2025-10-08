@@ -37,7 +37,14 @@ export default function ContactForm() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
+        let data;
+
+        try {
+          data = await response.json();
+        } catch (parseError) {
+          data = {};
+        }
+
         throw new Error(data.error || 'เกิดข้อผิดพลาดในการส่งข้อความ');
       }
 

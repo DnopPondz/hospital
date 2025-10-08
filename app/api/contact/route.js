@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendContactEmail } from '@/lib/email';
+import { MissingEnvError, SmtpError, sendContactEmail } from '@/lib/email';
 
 function validateEmail(value) {
   return /.+@.+\..+/.test(value);
@@ -31,6 +31,20 @@ export async function POST(request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Failed to send contact email', error);
+
+    if (error instanceof MissingEnvError) {
+      return NextResponse.json(
+        { error: 'ยังไม่ได้ตั้งค่าระบบอีเมล กรุณาติดต่อผู้ดูแลเว็บไซต์' },
+        { status: 500 }
+      );
+    }
+
+    if (error instanceof SmtpError) {
+      return NextResponse.json(
+        { error: 'ระบบอีเมลไม่ตอบสนอง กรุณาลองใหม่อีกครั้ง' },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json(
       { error: 'ไม่สามารถส่งอีเมลได้ กรุณาลองใหม่อีกครั้งภายหลัง' },
