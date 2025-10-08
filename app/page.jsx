@@ -229,7 +229,7 @@ export default async function HomePage() {
                   </div>
                 ))}
               </div>
-              <div className="rounded-3xl bg-gradient-to-br from-primary to-accent p-8 text-white">
+              {/* <div className="rounded-3xl bg-gradient-to-br from-primary to-accent p-8 text-white">
                 <h3 className="text-lg font-semibold">ลงทะเบียนใช้งานภายในไม่กี่นาที</h3>
                 <p className="mt-3 text-sm text-sky-50">เข้าสู่ระบบด้วยบัตรประชาชนหรือบัญชีภาครัฐเดิมที่มีอยู่</p>
                 <div className="mt-6 flex flex-wrap gap-4">
@@ -240,7 +240,7 @@ export default async function HomePage() {
                     คู่มือการใช้งาน
                   </a>
                 </div>
-              </div>
+              </div> */}
             </div>
             <div className="space-y-6">
               <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
