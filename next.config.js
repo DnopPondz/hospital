@@ -1,10 +1,11 @@
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   webpack(config, { dev, isServer }) {
     if (!dev && !isServer) {
+      const MiniCssExtractPluginModule = require('next/dist/compiled/mini-css-extract-plugin');
+      const MiniCssExtractPlugin =
+        MiniCssExtractPluginModule.default || MiniCssExtractPluginModule;
       const hasMiniCssPlugin = config.plugins.some(
         (plugin) => plugin?.constructor?.name === 'MiniCssExtractPlugin'
       );
