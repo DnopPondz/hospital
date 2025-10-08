@@ -3,6 +3,7 @@ import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import ServiceCard from '@/components/ServiceCard';
 import StatCard from '@/components/StatCard';
+import ContactForm from '@/components/ContactForm';
 
 const services = [
   {
@@ -242,47 +243,7 @@ export default function HomePage() {
             <div className="space-y-6">
               <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
                 <h3 className="text-base font-semibold text-neutral">แบบฟอร์มติดต่อออนไลน์</h3>
-                <form className="mt-6 space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-neutral" htmlFor="fullname">
-                      ชื่อ-นามสกุล
-                    </label>
-                    <input
-                      id="fullname"
-                      type="text"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      placeholder="กรอกชื่อ-นามสกุล"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-neutral" htmlFor="email">
-                      อีเมล
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      placeholder="example@email.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-neutral" htmlFor="message">
-                      ข้อความ
-                    </label>
-                    <textarea
-                      id="message"
-                      rows="4"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                      placeholder="ระบุรายละเอียดที่ต้องการติดต่อ"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
-                  >
-                    ส่งข้อความ
-                  </button>
-                </form>
+                <ContactForm />
               </div>
               <div className="rounded-3xl border border-sky-200 bg-sky-50/80 p-8 text-sm text-slate-600">
                 <p>
