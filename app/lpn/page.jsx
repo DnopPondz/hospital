@@ -28,6 +28,7 @@ export default function AdminPage() {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState(null);
+  const [processingSlug, setProcessingSlug] = useState(null);
 
   const fetchAnnouncements = async () => {
     try {
@@ -98,6 +99,53 @@ export default function AdminPage() {
       const data = await response.json();
       setFeedback({ type: 'error', message: data.message ?? 'ไม่สามารถบันทึกประกาศได้' });
     }
+  };
+
+  const handleToggleVisibility = async (slug, published) => {
+    setFeedback(null);
+    setProcessingSlug(slug);
+
+    const response = await fetch(`/api/announcements/${slug}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ published })
+    });
+
+    if (response.ok) {
+      setFeedback({
+        type: 'success',
+        message: published ? 'เปิดการแสดงประกาศเรียบร้อยแล้ว' : 'ปิดการแสดงประกาศเรียบร้อยแล้ว'
+      });
+      await fetchAnnouncements();
+    } else {
+      const data = await response.json();
+      setFeedback({ type: 'error', message: data.message ?? 'ไม่สามารถอัปเดตสถานะประกาศได้' });
+    }
+
+    setProcessingSlug(null);
+  };
+
+  const handleDeleteAnnouncement = async (slug, title) => {
+    if (!window.confirm(`ยืนยันการลบประกาศ “${title}” หรือไม่?`)) {
+      return;
+    }
+
+    setFeedback(null);
+    setProcessingSlug(slug);
+
+    const response = await fetch(`/api/announcements/${slug}`, {
+      method: 'DELETE'
+    });
+
+    if (response.ok) {
+      setFeedback({ type: 'success', message: 'ลบประกาศเรียบร้อยแล้ว' });
+      await fetchAnnouncements();
+    } else {
+      const data = await response.json();
+      setFeedback({ type: 'error', message: data.message ?? 'ไม่สามารถลบประกาศได้' });
+    }
+
+    setProcessingSlug(null);
   };
 
   return (
@@ -172,24 +220,68 @@ export default function AdminPage() {
                   <tr>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">วันที่</th>
                     <th className="px-4 py-3 text-left font-medium text-slate-600">หัวข้อ</th>
-                    <th className="px-4 py-3 text-left font-medium text-slate-600">ลิงก์</th>
+                    <th className="px-4 py-3 text-left font-medium text-slate-600">สถานะ</th>
+                    <th className="px-4 py-3 text-left font-medium text-slate-600">การจัดการ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {announcements.map((announcement) => (
                     <tr key={announcement.slug} className="bg-white">
                       <td className="px-4 py-3 text-slate-500">{formatThaiDate(announcement.date)}</td>
-                      <td className="px-4 py-3 font-medium text-neutral">{announcement.title}</td>
-                      <td className="px-4 py-3 text-primary">
-                        <a href={`/announcements/${announcement.slug}`} target="_blank" rel="noopener noreferrer">
-                          เปิดหน้า
-                        </a>
+                      <td className="px-4 py-3 font-medium text-neutral">
+                        <div className="flex flex-col">
+                          <span>{announcement.title}</span>
+                          {announcement.published ? (
+                            <a
+                              href={`/announcements/${announcement.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="mt-1 text-xs font-semibold text-primary"
+                            >
+                              เปิดหน้าในแท็บใหม่
+                            </a>
+                          ) : (
+                            <span className="mt-1 text-xs font-semibold text-slate-400">ยังไม่เผยแพร่</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
+                            announcement.published
+                              ? 'bg-emerald-50 text-emerald-600'
+                              : 'bg-slate-100 text-slate-500'
+                          }`}
+                        >
+                          <span className={`h-2 w-2 rounded-full ${announcement.published ? 'bg-emerald-400' : 'bg-slate-400'}`} />
+                          {announcement.published ? 'เปิดแสดง' : 'ปิดไว้' }
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleVisibility(announcement.slug, !announcement.published)}
+                            className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
+                            disabled={processingSlug === announcement.slug}
+                          >
+                            {announcement.published ? 'ปิดการแสดง' : 'เปิดการแสดง'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAnnouncement(announcement.slug, announcement.title)}
+                            className="rounded-full border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:border-rose-300 hover:bg-rose-50"
+                            disabled={processingSlug === announcement.slug}
+                          >
+                            ลบประกาศ
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
                   {announcements.length === 0 && !loading && (
                     <tr>
-                      <td colSpan={3} className="px-4 py-6 text-center text-slate-400">
+                      <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
                         ยังไม่มีประกาศในระบบ
                       </td>
                     </tr>

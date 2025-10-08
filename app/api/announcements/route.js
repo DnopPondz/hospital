@@ -5,8 +5,10 @@ import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-  const announcements = await getAnnouncements();
+export async function GET(request) {
+  const token = request.cookies.get('admin_token')?.value;
+  const includeHidden = verifySessionToken(token);
+  const announcements = await getAnnouncements({ includeHidden });
   return NextResponse.json(announcements);
 }
 
