@@ -1,9 +1,12 @@
+import Link from 'next/link';
+
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import ServiceCard from '@/components/ServiceCard';
 import StatCard from '@/components/StatCard';
 import ContactForm from '@/components/ContactForm';
+import { getAnnouncements } from '@/lib/announcements';
 
 const services = [
   {
@@ -32,24 +35,6 @@ const services = [
   }
 ];
 
-const announcements = [
-  {
-    title: 'ประกาศมาตรการบริการประชาชนเชิงรุกประจำปี 2567',
-    date: '15 พฤษภาคม 2567',
-    body: 'ปรับปรุงขั้นตอนบริการและเพิ่มช่องทางออนไลน์เพื่อให้ประชาชนเข้าถึงได้ทุกที่'
-  },
-  {
-    title: 'เปิดตัวแพลตฟอร์มดิจิทัลใหม่ "ThaiGov Connect"',
-    date: '2 พฤษภาคม 2567',
-    body: 'รวมบริการของหน่วยงานภาครัฐกว่า 200 บริการไว้ในช่องทางเดียว พร้อมระบบ Single Sign-on'
-  },
-  {
-    title: 'แจ้งเตือนประชาชนระวังมิจฉาชีพแอบอ้างชื่อหน่วยงาน',
-    date: '25 เมษายน 2567',
-    body: 'หน่วยงานไม่มีการขอข้อมูลส่วนตัวผ่านโทรศัพท์ โปรดตรวจสอบทุกครั้งก่อนให้ข้อมูล'
-  }
-];
-
 const stats = [
   { value: '2.8M+', label: 'บัญชีประชาชนที่ใช้งานระบบ' },
   { value: '180+', label: 'บริการภาครัฐที่เชื่อมต่อ' },
@@ -71,7 +56,21 @@ const digitalServices = [
   }
 ];
 
-export default function HomePage() {
+function formatThaiDate(value) {
+  try {
+    return new Intl.DateTimeFormat('th-TH', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    }).format(new Date(value));
+  } catch (error) {
+    return value;
+  }
+}
+
+export default async function HomePage() {
+  const announcements = (await getAnnouncements()).slice(0, 3);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
@@ -144,13 +143,15 @@ export default function HomePage() {
             <SectionTitle title="ข่าวประกาศล่าสุด" subtitle="ติดตามนโยบายและประกาศสำคัญจากภาครัฐ" />
             <div className="mt-10 grid gap-8 md:grid-cols-3">
               {announcements.map((announcement) => (
-                <article key={announcement.title} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{announcement.date}</p>
+                <article key={announcement.slug} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
+                    {formatThaiDate(announcement.date)}
+                  </p>
                   <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.body}</p>
-                  <a href="#" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
+                  <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
                     อ่านเพิ่มเติม <span aria-hidden="true">→</span>
-                  </a>
+                  </Link>
                 </article>
               ))}
             </div>
