@@ -2,11 +2,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const menuItems = [
-  { href: '/structure', label: 'โครงสร้างบุคลากร' },
-  { href: '#services', label: 'บริการประชาชน' },
-  { href: '#news', label: 'ข่าวประกาศ' },
-  { href: '#digital', label: 'ศูนย์บริการดิจิทัล' },
-  { href: '#contact', label: 'ติดต่อเรา' }
+  { href: '/', label: 'หน้าแรก' },
+  { href: '/services', label: 'บริการประชาชน' },
+  { href: '/news', label: 'ข่าวประกาศ' },
+  { href: '/digital', label: 'ศูนย์บริการดิจิทัล' },
+  { href: '/contact', label: 'ติดต่อเรา' },
+  { href: '/structure', label: 'โครงสร้างบุคลากร' }
 ];
 
 export default function Navbar() {

@@ -5,91 +5,8 @@ import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import ServiceCard from '@/components/ServiceCard';
 import StatCard from '@/components/StatCard';
-import ContactForm from '@/components/ContactForm';
 import { getAnnouncements } from '@/lib/announcements';
-
-const services = [
-  {
-    icon: '🪪',
-    title: 'บริการบัตรประชาชน',
-    description: 'จองคิวทำบัตรใหม่ แจ้งเปลี่ยนแปลงข้อมูล และตรวจสอบสถานะได้ภายในไม่กี่คลิก',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer gravida molestie mauris, eget mattis velit mattis vitae. Vivamus vehicula, turpis non aliquam pellentesque, urna tellus ornare erat, vitae dictum orci lectus eget metus. Sed at sodales nulla. Maecenas pellentesque vitae neque vitae ultrices. Donec efficitur, sapien at lobortis fermentum, orci arcu semper justo, vitae vulputate justo orci condimentum turpis.',
-        'Suspendisse tempor arcu ut nisi viverra, vel vehicula nisl fringilla. Duis sed varius nisl. Sed tincidunt tristique purus sed dignissim. Nulla ullamcorper tincidunt erat, nec bibendum erat rhoncus a. Curabitur tincidunt, orci sit amet auctor ultricies, turpis est gravida erat, posuere varius metus velit in elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer ac ligula venenatis, tempus orci ac, faucibus lorem.',
-        'Mauris finibus placerat nisi, vitae consequat magna commodo non. Curabitur sed fringilla odio, vitae ultricies quam. Vivamus euismod dapibus eros, id sollicitudin enim tincidunt viverra. Integer suscipit, enim ac ultrices tristique, ligula mi lacinia arcu, a vulputate eros arcu id nisi. Cras feugiat scelerisque felis eu tincidunt.'
-      ],
-      highlights: [
-        'ขั้นตอนการยื่นคำร้องและจองคิวออนไลน์ภายใน 5 นาที',
-        'ระบบติดตามสถานะแบบเรียลไทม์พร้อมแจ้งเตือนผ่านอีเมลและ SMS',
-        'คำแนะนำการเตรียมเอกสารสำหรับกรณีบัตรหายหรือบัตรหมดอายุ'
-      ],
-      footer:
-        'Nam consequat, neque a rutrum commodo, magna arcu suscipit ipsum, id efficitur eros risus ac enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.'
-    }
-  },
-  {
-    icon: '💼',
-    title: 'สิทธิและสวัสดิการ',
-    description: 'ตรวจสอบสิทธิประโยชน์และสมัครรับสวัสดิการจากทุกหน่วยงานในที่เดียว',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Praesent posuere nunc id pretium euismod. Integer a ligula risus. Integer ac lacus a turpis aliquam tempus quis vel nisi. Morbi eu nibh non dolor tincidunt lobortis. Nulla ultricies libero sed iaculis bibendum. Nunc finibus quam libero, sed malesuada augue condimentum ut. Vestibulum id mauris varius, vehicula enim vitae, accumsan lacus.',
-        'Aliquam erat volutpat. Donec quis tincidunt dui. Duis varius risus ac odio tincidunt tristique. Pellentesque vel sapien a augue interdum viverra vel eget libero. Vivamus mollis leo eget tellus volutpat blandit. Pellentesque egestas orci vitae varius feugiat. In luctus tortor at laoreet egestas. Nunc aliquet iaculis sapien, sed efficitur lacus iaculis sed.',
-        'Donec aliquet, risus luctus euismod consequat, massa mi tincidunt erat, eu porta libero magna sed enim. Duis sit amet dolor vehicula, euismod risus non, varius elit. Duis vehicula lacus sed auctor sodales. Etiam sit amet ipsum neque. Integer gravida nibh sit amet odio blandit, porta semper leo egestas.'
-      ],
-      highlights: [
-        'คู่มือเปรียบเทียบสิทธิจากหน่วยงานหลักกว่า 20 แห่ง',
-        'ตัวช่วยกรอกแบบฟอร์มพร้อมบันทึกเวอร์ชันร่างอัตโนมัติ',
-        'เทมเพลตคำถามที่พบบ่อยเพื่อเตรียมข้อมูลล่วงหน้า'
-      ],
-      footer:
-        'Etiam tincidunt lectus id tortor mattis, vitae ullamcorper libero hendrerit. Nunc vitae laoreet lacus, eu interdum urna.'
-    }
-  },
-  {
-    icon: '🏥',
-    title: 'บริการด้านสาธารณสุข',
-    description: 'จองคิวโรงพยาบาล ค้นหาแพทย์เฉพาะทาง และดูประวัติการรักษาออนไลน์',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Integer nec mauris in nisl pharetra hendrerit. Sed auctor nibh odio, at scelerisque ligula vestibulum nec. Morbi tempus nisl quis sapien rhoncus rutrum. Morbi vitae tortor non massa malesuada feugiat. Donec lobortis efficitur ultrices. Pellentesque fringilla, risus eu euismod condimentum, lacus metus tempus velit, vel dignissim sem neque nec mauris.',
-        'Suspendisse condimentum justo vitae nunc finibus, non auctor erat aliquam. Donec sed nibh volutpat, efficitur libero in, tincidunt justo. Integer sapien ipsum, faucibus sit amet semper ut, ullamcorper quis velit. Sed sed enim id nibh imperdiet vulputate at sed elit. Pellentesque vel fringilla orci. Praesent semper gravida vehicula.',
-        'Curabitur viverra ornare erat, in efficitur risus tempor sit amet. Proin sed efficitur arcu. Cras bibendum urna non turpis gravida, sed rhoncus tellus aliquet. Aenean tempus condimentum nisi sed vulputate. Vivamus ultricies leo eget dolor dignissim molestie.'
-      ],
-      highlights: [
-        'ระบบแสดงเวลารอเฉลี่ยของแต่ละโรงพยาบาลแบบเรียลไทม์',
-        'ปฏิทินอัจฉริยะสำหรับซิงก์นัดหมายกับโทรศัพท์มือถือ',
-        'ชุดคำแนะนำการเตรียมตัวก่อนพบแพทย์และหลังการรักษา'
-      ],
-      footer:
-        'Sed sit amet viverra enim. Donec sit amet justo ac urna dignissim faucibus. Phasellus pulvinar ac nunc ac viverra.'
-    }
-  },
-  {
-    icon: '📄',
-    title: 'ยื่นคำร้องออนไลน์',
-    description: 'ยื่นคำขอเอกสารราชการและติดตามความคืบหน้าแบบเรียลไทม์',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Duis finibus libero vitae dolor porttitor vulputate. Sed ut velit id lorem congue fermentum. Aliquam consectetur sem ut fermentum pulvinar. Vestibulum lacinia libero quis ex rutrum, sit amet feugiat enim dictum. Sed tincidunt aliquet porta. Nulla facilisi. Sed et velit nunc. Nulla facilisi.',
-        'Quisque at risus nibh. Nulla tempus sodales interdum. Nullam venenatis bibendum ante, sit amet ullamcorper arcu viverra ut. Integer consequat vitae nisl ut malesuada. Fusce hendrerit neque eget dolor posuere egestas. Pellentesque at nulla non arcu facilisis egestas.',
-        'Nam eu magna tincidunt, ultricies nibh non, tempus metus. Praesent et urna vitae libero sollicitudin varius. Donec maximus, ligula vitae mollis convallis, sem ante tristique justo, ac dictum quam elit sit amet risus.'
-      ],
-      highlights: [
-        'ระบบแนะนำฟอร์มที่เหมาะสมตามประเภทคำร้อง',
-        'การแนบไฟล์เอกสารที่ปลอดภัยพร้อมตรวจสอบความครบถ้วน',
-        'สรุปสถานะการพิจารณาแต่ละหน่วยงานในหน้าเดียว'
-      ],
-      footer:
-        'Morbi a sem porttitor, sollicitudin nibh sit amet, maximus turpis. Cras aliquet nunc nec magna ullamcorper, quis pharetra erat vulputate.'
-    }
-  }
-];
+import { coreServices } from '@/lib/services';
 
 const stats = [
   { value: '2.8M+', label: 'บัญชีประชาชนที่ใช้งานระบบ' },
@@ -97,18 +14,41 @@ const stats = [
   { value: '98%', label: 'ความพึงพอใจจากแบบสำรวจล่าสุด' }
 ];
 
-const digitalServices = [
+const quickDestinations = [
   {
-    title: 'ศูนย์รวมการแจ้งเตือน',
-    description: 'รับการแจ้งเตือนสําคัญจากทุกหน่วยงานผ่านศูนย์เดียว และตั้งค่าความถี่ได้ตามต้องการ'
+    title: 'บริการดิจิทัลสำหรับประชาชน',
+    description: 'เลือกบริการที่ต้องการตามสถานการณ์ชีวิต พร้อมระบบนัดหมายล่วงหน้า',
+    href: '/services'
   },
   {
-    title: 'แดชบอร์ดส่วนบุคคล',
-    description: 'ติดตามสถานะคำร้อง เอกสารที่ต้องต่ออายุ และข่าวสารเฉพาะกลุ่ม'
+    title: 'สรุปข่าวและประกาศสำคัญ',
+    description: 'ติดตามนโยบายใหม่และประกาศเร่งด่วนจากทุกกรมกองในมุมมองเดียว',
+    href: '/news'
   },
   {
-    title: 'ผู้ช่วยอัจฉริยะภาครัฐ',
-    description: 'ตอบคำถามและแนะนำบริการที่เหมาะสมผ่านระบบสนทนาด้วยภาษาไทย'
+    title: 'ศูนย์บริการ ThaiGov Connect',
+    description: 'ลงทะเบียนบัญชี สั่งงานดิจิทัล และตั้งค่าการแจ้งเตือนแบบรวมศูนย์',
+    href: '/digital'
+  },
+  {
+    title: 'ช่องทางติดต่อภาครัฐ',
+    description: 'จองเวลาพบเจ้าหน้าที่ ส่งคำร้องออนไลน์ หรือขอคำปรึกษาเฉพาะด้าน',
+    href: '/contact'
+  }
+];
+
+const digitalPreview = [
+  {
+    title: 'แดชบอร์ดสถานะคำร้อง',
+    description: 'เห็นความคืบหน้าเอกสารทุกฉบับ พร้อมเวลาประเมินการอนุมัติแบบเรียลไทม์'
+  },
+  {
+    title: 'ผู้ช่วยระบบอัตโนมัติ',
+    description: 'สนทนาเป็นภาษาไทย แนะนำขั้นตอนและเอกสารที่ต้องเตรียมได้ทันที'
+  },
+  {
+    title: 'การยืนยันตัวตนปลอดภัย',
+    description: 'รองรับทั้งบัตรประชาชน สแกนใบหน้า และแอป ThaID เพื่อความสบายใจ'
   }
 ];
 
@@ -146,12 +86,18 @@ export default async function HomePage() {
                 รวมข้อมูลและบริการจากทุกหน่วยงานภาครัฐไว้ในที่เดียว ตั้งแต่การขอเอกสาร จองคิว ไปจนถึงรับสิทธิประโยชน์ต่าง ๆ บริการด้วยมาตรฐานเดียวกันทั่วประเทศ
               </p>
               <div className="flex flex-wrap gap-4">
-                <a href="#digital" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral">
+                <Link
+                  href="/digital"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
+                >
                   เริ่มต้นใช้งานบริการดิจิทัล
-                </a>
-                <a href="#services" className="rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10">
+                </Link>
+                <Link
+                  href="/services"
+                  className="rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                >
                   สำรวจบริการทั้งหมด
-                </a>
+                </Link>
               </div>
               <div className="grid gap-4 pt-8 sm:grid-cols-3">
                 {stats.map((item) => (
@@ -185,127 +131,176 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section id="services" className="mx-auto max-w-6xl px-6 py-20">
-          <SectionTitle title="บริการยอดนิยม" subtitle="เชื่อมต่อบริการที่จำเป็นสำหรับทุกช่วงชีวิตให้พร้อมใช้งานในไม่กี่ขั้นตอน" />
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <SectionTitle title="เมนูสำหรับงานราชการ" subtitle="เลือกปลายทางที่ต้องการแล้วเริ่มต้นในหน้าที่ออกแบบมาเฉพาะ" />
           <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {services.map((service) => (
-              <ServiceCard key={service.title} {...service} />
+            {quickDestinations.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex h-full flex-col justify-between rounded-3xl border border-[#dcece2] bg-white/80 p-6 shadow-sm transition hover:-translate-y-1 hover:border-primary/60 hover:shadow-lg"
+              >
+                <div>
+                  <h3 className="text-lg font-semibold text-neutral group-hover:text-primary">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
+                </div>
+                <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  ไปยังหน้าเฉพาะทาง <span aria-hidden="true">→</span>
+                </span>
+              </Link>
             ))}
           </div>
         </section>
 
-        <section id="news" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper p-10">
-            <SectionTitle title="ข่าวประกาศล่าสุด" subtitle="ติดตามนโยบายและประกาศสำคัญจากภาครัฐ" />
-            <div className="mt-10 grid gap-8 md:grid-cols-3">
-              {announcements.map((announcement) => (
-                <article key={announcement.slug} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                    {formatThaiDate(announcement.date)}
-                  </p>
-                  <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
-                  <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    อ่านเพิ่มเติม <span aria-hidden="true">→</span>
-                  </Link>
-                </article>
-              ))}
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#f3fbf6] via-white to-[#e1f2e7] py-20">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(104,194,139,0.18),_transparent_55%)]" />
+          <div className="relative mx-auto max-w-6xl px-6">
+            <div className="flex flex-col gap-12 lg:flex-row lg:items-center">
+              <div className="flex-1 space-y-6">
+                <SectionTitle
+                  title="บริการหลักสำหรับประชาชน"
+                  subtitle="ตัวอย่างบริการที่ได้รับความนิยมสูงสุด พร้อมลิงก์สู่รายละเอียดเชิงลึก"
+                />
+                <p className="text-sm text-slate-600">
+                  เลือกดูบริการตามหมวดหมู่หรือค้นหาเหตุการณ์ที่ตรงกับคุณได้ในหน้า{' '}
+                  <span className="font-semibold text-primary">บริการประชาชน</span> ซึ่งมีคู่มือ ภาพรวมขั้นตอน และคำถามที่พบบ่อยแยกตามงาน
+                  เพื่อช่วยให้การดำเนินการรวดเร็วและมั่นใจยิ่งขึ้น
+                </p>
+                <Link
+                  href="/services"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+                >
+                  เปิดดูบริการทั้งหมด <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div className="flex-1">
+                <div className="grid gap-6 md:grid-cols-2">
+                  {coreServices.slice(0, 4).map((service) => (
+                    <ServiceCard key={service.title} {...service} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="digital" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper grid gap-12 p-10 lg:grid-cols-[1.3fr_1fr]">
-            <div className="space-y-6">
-              <SectionTitle
-                title="ศูนย์บริการดิจิทัล ThaiGov Connect"
-                subtitle="เข้าสู่ระบบเดียว ใช้บริการได้ทุกหน่วยงาน พร้อมผู้ช่วยอัจฉริยะดูแลคุณตลอด 24 ชั่วโมง"
-              />
-              <div className="grid gap-6 md:grid-cols-2">
-                {digitalServices.map((service) => (
-                  <div key={service.title} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                    <h3 className="text-base font-semibold text-neutral">{service.title}</h3>
-                    <p className="mt-3 text-sm text-slate-600">{service.description}</p>
-                  </div>
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <div className="section-wrapper overflow-hidden bg-white/85 p-10 shadow-sm">
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
+              <div className="flex-1 space-y-4">
+                <SectionTitle
+                  title="ข่าวและประกาศล่าสุด"
+                  subtitle="สรุปประเด็นสำคัญที่ต้องรู้ และเชื่อมต่อไปยังศูนย์ข่าวเต็มรูปแบบ"
+                />
+                <p className="text-sm text-slate-600">
+                  หน้า<span className="font-semibold text-primary">ข่าวประกาศ</span> รวบรวมข้อมูลจากทุกกรมกองพร้อมตัวกรองตามหมวด และไทม์ไลน์เหตุการณ์ย้อนหลังเพื่อให้ติดตามได้สะดวก
+                  ตัวอย่างข่าวที่เผยแพร่ล่าสุดมีดังนี้
+                </p>
+                <Link href="/news" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  ไปยังศูนย์ข่าวทั้งหมด <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div className="flex-1 space-y-6">
+                {announcements.map((announcement) => (
+                  <article
+                    key={announcement.slug}
+                    className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:border-primary/60"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{formatThaiDate(announcement.date)}</p>
+                    <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
+                    <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      อ่านประกาศฉบับเต็ม <span aria-hidden="true">→</span>
+                    </Link>
+                  </article>
                 ))}
               </div>
-              {/* <div className="rounded-3xl bg-gradient-to-br from-primary to-accent p-8 text-white">
-                <h3 className="text-lg font-semibold">ลงทะเบียนใช้งานภายในไม่กี่นาที</h3>
-                <p className="mt-3 text-sm text-[#f0fff5]">เข้าสู่ระบบด้วยบัตรประชาชนหรือบัญชีภาครัฐเดิมที่มีอยู่</p>
-                <div className="mt-6 flex flex-wrap gap-4">
-                  <a href="#" className="rounded-full bg-white/90 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-white">
-                    ลงทะเบียนบัญชีใหม่
-                  </a>
-                  <a href="#" className="rounded-full border border-white px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-                    คู่มือการใช้งาน
-                  </a>
-                </div>
-              </div> */}
             </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
-                <h3 className="text-base font-semibold text-neutral">ช่องทางด่วน</h3>
-                <ul className="mt-5 space-y-4 text-sm text-slate-600">
-                  <li className="flex items-center justify-between">
-                    <span>ลงชื่อเข้าใช้ด้วยบัตรประชาชน</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ยืนยันตัวตนผ่านแอป ThaID</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ติดตามสถานะคำร้อง</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ขอรับการแจ้งเตือนเพิ่มเติม</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="rounded-3xl border border-[#c7e2d1] bg-[#eef7f1] p-8 text-neutral">
-                <h3 className="text-base font-semibold text-neutral">มาตรฐานความปลอดภัย</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
-                  ระบบรักษาความปลอดภัยระดับสากล รองรับการยืนยันตัวตนหลายปัจจัยและการเข้ารหัสข้อมูลทุกขั้นตอน เพื่อปกป้องข้อมูลส่วนบุคคลของประชาชน
+          </div>
+        </section>
+
+        <section className="bg-[#f4faf6] py-20">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr]">
+              <div className="space-y-6">
+                <SectionTitle title="ThaiGov Connect" subtitle="ศูนย์กลางการทำงานดิจิทัลของภาครัฐ" />
+                <p className="text-sm leading-6 text-slate-600">
+                  ศูนย์บริการดิจิทัลออกแบบให้เชื่อมโยงงานทุกประเภทของประชาชน ตั้งแต่การเข้าระบบ ไปจนถึงการรับการแจ้งเตือนเฉพาะเรื่อง
+                  หน้าศูนย์บริการฯ จะแสดงแผนที่การเดินเรื่อง การตั้งค่าบัญชี และคู่มือการใช้งานเชิงลึกแบบก้าวต่อก้าว
                 </p>
+                <ul className="space-y-4">
+                  {digitalPreview.map((item) => (
+                    <li key={item.title} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                      <h3 className="text-base font-semibold text-neutral">{item.title}</h3>
+                      <p className="mt-2 text-sm text-slate-600">{item.description}</p>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/digital"
+                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
+                >
+                  สำรวจศูนย์บริการดิจิทัล <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div className="section-wrapper space-y-6 p-8">
+                <h3 className="text-base font-semibold text-neutral">ขั้นตอนเริ่มใช้งาน</h3>
+                <ol className="space-y-4 text-sm text-slate-600">
+                  <li className="rounded-3xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                    <span className="font-semibold text-primary">1.</span> ยืนยันตัวตนด้วยบัตรประชาชนหรือแอป ThaID และสร้างบัญชี ThaiGov Connect
+                  </li>
+                  <li className="rounded-3xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                    <span className="font-semibold text-primary">2.</span> เลือกบริการที่ต้องการ พร้อมตั้งค่าการแจ้งเตือนและผูกเอกสารสำคัญ
+                  </li>
+                  <li className="rounded-3xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                    <span className="font-semibold text-primary">3.</span> ติดตามสถานะและรับคำแนะนำจากผู้ช่วยอัจฉริยะได้ตลอด 24 ชั่วโมง
+                  </li>
+                </ol>
+                <div className="rounded-3xl border border-[#c7e2d1] bg-[#eef7f1] p-6 text-sm text-slate-600">
+                  รองรับการใช้งานบนคอมพิวเตอร์ โทรศัพท์มือถือ และศูนย์บริการภาครัฐทั่วประเทศ
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper grid gap-12 p-10 lg:grid-cols-2">
-            <div className="space-y-6">
-              <SectionTitle title="ติดต่อศูนย์บริการภาครัฐ" subtitle="พร้อมดูแลประชาชนทุกช่องทาง" />
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">สายด่วนภาครัฐ 1111</p>
-                  <p className="mt-2 text-sm text-slate-600">24 ชั่วโมง</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">ศูนย์บริการประชาชน</p>
-                  <p className="mt-2 text-sm text-slate-600">อาคารราชการไทย ถนนประชาธิปไตย เขตดุสิต กรุงเทพฯ</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">บริการสนทนาออนไลน์</p>
-                  <p className="mt-2 text-sm text-slate-600">จันทร์-ศุกร์ 08:30 - 20:00 น.</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">ศูนย์ข้อมูลเปิด</p>
-                  <p className="mt-2 text-sm text-slate-600">ดาวน์โหลดชุดข้อมูลภาครัฐพร้อมใช้งาน</p>
-                </div>
-              </div>
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <div className="section-wrapper grid gap-10 p-10 lg:grid-cols-[1fr_1.1fr]">
+            <div className="space-y-4">
+              <SectionTitle
+                title="ต้องการความช่วยเหลือเพิ่มเติม?"
+                subtitle={
+                  <>
+                    หน้า<span className="font-semibold text-primary">ติดต่อเรา</span> พร้อมข้อมูลสายด่วน ช่องทางดิจิทัล และการจองเวลาเข้าพบเจ้าหน้าที่
+                  </>
+                }
+              />
+              <p className="text-sm text-slate-600">
+                เลือกจองเวลาติดต่อ กรอกแบบฟอร์มออนไลน์ หรือดูแผนที่สำนักงานราชการได้จากหน้าเฉพาะโดยตรง พร้อมคำถามที่พบบ่อยแยกตามหัวข้อยอดนิยม
+              </p>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary hover:text-white"
+              >
+                เปิดหน้าติดต่อเรา <span aria-hidden="true">→</span>
+              </Link>
             </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
-                <h3 className="text-base font-semibold text-neutral">แบบฟอร์มติดต่อออนไลน์</h3>
-                <ContactForm />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                <p className="text-sm font-semibold text-neutral">สายด่วนภาครัฐ 1111</p>
+                <p className="mt-2 text-sm text-slate-600">ตลอด 24 ชั่วโมง</p>
               </div>
-              <div className="rounded-3xl border border-[#c7e2d1] bg-[#eef7f1] p-8 text-sm text-slate-600">
-                <p>
-                  *ข้อมูลทุกอย่างจะถูกจัดเก็บตามมาตรฐาน PDPA และใช้เพื่อการให้บริการตามที่ระบุเท่านั้น สามารถตรวจสอบนโยบายความเป็นส่วนตัวได้ที่ศูนย์ข้อมูลเปิด
-                </p>
+              <div className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                <p className="text-sm font-semibold text-neutral">บริการสนทนาออนไลน์</p>
+                <p className="mt-2 text-sm text-slate-600">พร้อมเจ้าหน้าที่ตอบกลับภายใน 15 นาที</p>
+              </div>
+              <div className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                <p className="text-sm font-semibold text-neutral">ศูนย์บริการประชาชน</p>
+                <p className="mt-2 text-sm text-slate-600">อาคารราชการไทย ถนนประชาธิปไตย เขตดุสิต กรุงเทพฯ</p>
+              </div>
+              <div className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                <p className="text-sm font-semibold text-neutral">ศูนย์ข้อมูลเปิด</p>
+                <p className="mt-2 text-sm text-slate-600">ดาวน์โหลดเอกสารและนโยบายล่าสุดได้ทันที</p>
               </div>
             </div>
           </div>
