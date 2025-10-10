@@ -1,6 +1,8 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 const menuItems = [
+  { href: '/structure', label: 'โครงสร้างบุคลากร' },
   { href: '#services', label: 'บริการประชาชน' },
   { href: '#news', label: 'ข่าวประกาศ' },
   { href: '#digital', label: 'ศูนย์บริการดิจิทัล' },
@@ -22,10 +24,10 @@ export default function Navbar() {
         </div>
         <nav className="hidden items-center gap-8 text-sm font-medium text-neutral md:flex">
           {menuItems.map((item) => (
-            <a key={item.href} href={item.href} className="relative transition hover:text-primary">
+            <Link key={item.href} href={item.href} className="group relative transition hover:text-primary">
               {item.label}
-              <span className="absolute bottom-[-8px] left-0 h-[2px] w-0 bg-primary transition-all duration-300 ease-in-out hover:w-full" />
-            </a>
+              <span className="pointer-events-none absolute bottom-[-8px] left-0 h-[2px] w-0 bg-primary transition-all duration-300 ease-in-out group-hover:w-full" />
+            </Link>
           ))}
         </nav>
         {/* <a
