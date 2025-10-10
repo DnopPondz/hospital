@@ -1,0 +1,15 @@
+<svg width="160" height="160" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">ตรากระทรวงสาธารณสุข</title>
+  <desc id="desc">โลโก้วงกลมพื้นสีเขียวล้อมรอบสัญลักษณ์ทางการแพทย์สีขาว</desc>
+  <circle cx="80" cy="80" r="78" fill="#0E6A3D" />
+  <circle cx="80" cy="80" r="66" fill="white" />
+  <circle cx="80" cy="80" r="52" fill="#0E6A3D" />
+  <path fill="white" d="M80 38c-6.7 0-12.2 5.5-12.2 12.2 0 5.2 3.2 9.6 7.8 11.3l-1.2 6.5h-7.4c-2.1 0-3.7 1.7-3.7 3.7 0 2.1 1.7 3.7 3.7 3.7h6.1l-2.3 12.6-8.2 6.5a3.7 3.7 0 0 0-.7 5.2 3.7 3.7 0 0 0 5.2.7l4.6-3.7-.7 3.8-7.3 5.8a3.7 3.7 0 1 0 4.5 5.9l4.6-3.7c-.3 3-1 6.5-2.4 10.6-.8 2.2.3 4.6 2.5 5.4 2.2.8 4.6-.3 5.4-2.5l2.3-6.5 2.3 6.5c.8 2.2 3.2 3.3 5.4 2.5 2.2-.8 3.3-3.2 2.5-5.4-1.4-4-2.1-7.6-2.4-10.6l4.6 3.7a3.7 3.7 0 1 0 4.5-5.9l-7.3-5.8-.7-3.8 4.6 3.7a3.7 3.7 0 0 0 4.5-5.9l-8.2-6.5-2.3-12.6h6.1c2.1 0 3.7-1.7 3.7-3.7 0-2.1-1.7-3.7-3.7-3.7h-7.4l-1.2-6.5c4.5-1.7 7.8-6.1 7.8-11.3C92.2 43.5 86.7 38 80 38zm0 7.3a4.9 4.9 0 1 1 0 9.8 4.9 4.9 0 0 1 0-9.8z" />
+  <path fill="none" stroke="white" stroke-width="5" d="M80 18a62 62 0 1 1 0 124 62 62 0 0 1 0-124z" />
+  <defs>
+    <path id="text-circle" d="M80 12a68 68 0 1 1 0 136 68 68 0 0 1 0-136z" />
+  </defs>
+  <text fill="white" font-family="'Noto Sans Thai', 'Prompt', sans-serif" font-size="10" letter-spacing="1.5">
+    <textPath href="#text-circle" startOffset="10%">กระทรวงสาธารณสุข  MINISTRY OF PUBLIC HEALTH</textPath>
+  </text>
+</svg>
