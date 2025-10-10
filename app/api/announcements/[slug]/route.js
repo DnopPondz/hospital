@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { deleteAnnouncement, setAnnouncementVisibility } from '@/lib/announcements';
+import { deleteAnnouncement, updateAnnouncement } from '@/lib/announcements';
 import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -21,10 +21,27 @@ export async function PATCH(request, { params }) {
     return authResponse;
   }
 
-  const { published } = await request.json();
+  const body = await request.json();
+  const payload = {};
+
+  if (Object.prototype.hasOwnProperty.call(body, 'published')) {
+    payload.published = body.published;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'displayFrom')) {
+    payload.displayFrom = body.displayFrom;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'displayUntil')) {
+    payload.displayUntil = body.displayUntil;
+  }
+
+  if (Object.keys(payload).length === 0) {
+    return NextResponse.json({ message: 'ไม่พบข้อมูลที่ต้องการอัปเดต' }, { status: 400 });
+  }
 
   try {
-    const updated = await setAnnouncementVisibility(params.slug, published);
+    const updated = await updateAnnouncement(params.slug, payload);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
