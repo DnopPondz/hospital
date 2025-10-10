@@ -17,5 +17,5 @@ a {
 }
 
 .section-wrapper {
-  @apply relative overflow-hidden rounded-[40px] border border-slate-100 bg-white/70 shadow-sm;
+  @apply relative overflow-hidden rounded-[40px] border border-[#d8e7de] bg-white/75 shadow-sm;
 }

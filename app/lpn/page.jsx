@@ -149,7 +149,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 py-16">
+    <div className="min-h-screen bg-[#e6efe9] py-16">
       <div className="mx-auto max-w-5xl rounded-3xl bg-white p-10 shadow-sm">
         <h1 className="text-2xl font-semibold text-neutral">ระบบจัดการประกาศ</h1>
         <p className="mt-2 text-sm text-slate-500">เข้าสู่ระบบเพื่อเพิ่มหรือแก้ไขข่าวประกาศบนหน้าเว็บไซต์หลัก</p>
@@ -158,7 +158,7 @@ export default function AdminPage() {
           <div
             className={`mt-6 rounded-2xl border px-4 py-3 text-sm ${
               feedback.type === 'success'
-                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                ? 'border-[#c7e2d1] bg-[#eef7f1] text-primary'
                 : 'border-rose-200 bg-rose-50 text-rose-700'
             }`}
           >
@@ -249,11 +249,11 @@ export default function AdminPage() {
                         <span
                           className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${
                             announcement.published
-                              ? 'bg-emerald-50 text-emerald-600'
+                              ? 'bg-[#e6f4ec] text-primary'
                               : 'bg-slate-100 text-slate-500'
                           }`}
                         >
-                          <span className={`h-2 w-2 rounded-full ${announcement.published ? 'bg-emerald-400' : 'bg-slate-400'}`} />
+                          <span className={`h-2 w-2 rounded-full ${announcement.published ? 'bg-accent' : 'bg-slate-400'}`} />
                           {announcement.published ? 'เปิดแสดง' : 'ปิดไว้' }
                         </span>
                       </td>
