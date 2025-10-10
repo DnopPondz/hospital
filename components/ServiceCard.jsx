@@ -91,7 +91,7 @@ export default function ServiceCard({ icon, title, description, details }) {
               ))}
 
               {highlights.length > 0 && (
-                <div className="rounded-2xl bg-sky-50/70 p-5 text-slate-600 shadow-inner">
+                <div className="rounded-2xl bg-emerald-50/70 p-5 text-slate-600 shadow-inner">
                   <h4 className="text-sm font-semibold text-primary">หัวข้อสำคัญที่ควรรู้</h4>
                   <ul className="mt-3 list-inside list-disc space-y-2 text-sm leading-6 text-slate-600">
                     {highlights.map((item, index) => (

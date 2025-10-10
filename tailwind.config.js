@@ -7,15 +7,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#0f5faf',
-        accent: '#4da6ff',
-        neutral: '#0b1d3c'
+        primary: '#1e7f4b',
+        accent: '#6ee7b7',
+        neutral: '#123524'
       },
       fontFamily: {
         sans: ['"Noto Sans Thai"', 'sans-serif']
       },
       boxShadow: {
-        card: '0 20px 40px -24px rgba(15, 95, 175, 0.4)'
+        card: '0 20px 40px -24px rgba(30, 127, 75, 0.4)'
       }
     }
   },

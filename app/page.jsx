@@ -131,8 +131,8 @@ export default async function HomePage() {
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-100">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(77,166,255,0.25),_transparent_55%)]" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-emerald-100">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(110,231,183,0.25),_transparent_55%)]" />
           <div className="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 py-20 md:flex-row md:items-center">
             <div className="flex-1 space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-medium text-primary shadow-sm">
@@ -163,7 +163,7 @@ export default async function HomePage() {
               <div className="section-wrapper space-y-5 p-8">
                 <h2 className="text-lg font-semibold text-neutral">บริการด่วนยอดนิยม</h2>
                 <ul className="space-y-3 text-sm text-slate-600">
-                  <li className="flex items-center justify-between rounded-2xl bg-sky-50/60 px-4 py-3">
+                  <li className="flex items-center justify-between rounded-2xl bg-emerald-50/60 px-4 py-3">
                     <span>ตรวจสอบสิทธิ "เราชนะ" รอบล่าสุด</span>
                     <span className="text-primary">→</span>
                   </li>
@@ -231,7 +231,7 @@ export default async function HomePage() {
               </div>
               {/* <div className="rounded-3xl bg-gradient-to-br from-primary to-accent p-8 text-white">
                 <h3 className="text-lg font-semibold">ลงทะเบียนใช้งานภายในไม่กี่นาที</h3>
-                <p className="mt-3 text-sm text-sky-50">เข้าสู่ระบบด้วยบัตรประชาชนหรือบัญชีภาครัฐเดิมที่มีอยู่</p>
+                <p className="mt-3 text-sm text-emerald-50">เข้าสู่ระบบด้วยบัตรประชาชนหรือบัญชีภาครัฐเดิมที่มีอยู่</p>
                 <div className="mt-6 flex flex-wrap gap-4">
                   <a href="#" className="rounded-full bg-white/90 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-white">
                     ลงทะเบียนบัญชีใหม่
@@ -264,7 +264,7 @@ export default async function HomePage() {
                   </li>
                 </ul>
               </div>
-              <div className="rounded-3xl border border-sky-200 bg-sky-50/80 p-8 text-neutral">
+              <div className="rounded-3xl border border-emerald-200 bg-emerald-50/80 p-8 text-neutral">
                 <h3 className="text-base font-semibold text-neutral">มาตรฐานความปลอดภัย</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   ระบบรักษาความปลอดภัยระดับสากล รองรับการยืนยันตัวตนหลายปัจจัยและการเข้ารหัสข้อมูลทุกขั้นตอน เพื่อปกป้องข้อมูลส่วนบุคคลของประชาชน
@@ -302,7 +302,7 @@ export default async function HomePage() {
                 <h3 className="text-base font-semibold text-neutral">แบบฟอร์มติดต่อออนไลน์</h3>
                 <ContactForm />
               </div>
-              <div className="rounded-3xl border border-sky-200 bg-sky-50/80 p-8 text-sm text-slate-600">
+              <div className="rounded-3xl border border-emerald-200 bg-emerald-50/80 p-8 text-sm text-slate-600">
                 <p>
                   *ข้อมูลทุกอย่างจะถูกจัดเก็บตามมาตรฐาน PDPA และใช้เพื่อการให้บริการตามที่ระบุเท่านั้น สามารถตรวจสอบนโยบายความเป็นส่วนตัวได้ที่ศูนย์ข้อมูลเปิด
                 </p>
