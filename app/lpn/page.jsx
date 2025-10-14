@@ -260,14 +260,24 @@ export default function AdminPage() {
         throw new Error(data?.message ?? 'ไม่สามารถอัปโหลดไฟล์ได้');
       }
 
+      const imageUrl = data?.url ?? '';
+
       setFormData((previous) => ({
         ...previous,
-        [type]: { ...previous[type], image: data?.path ?? '' }
+        [type]: { ...previous[type], image: imageUrl }
       }));
 
       setUploadMessages((previous) => ({
         ...previous,
-        [type]: { kind: 'success', text: data?.message ?? 'อัปโหลดไฟล์สำเร็จ' }
+        [type]: {
+          kind: 'success',
+          text:
+            data?.message && imageUrl
+              ? `${data.message} — ${imageUrl}`
+              : imageUrl
+              ? `อัปโหลดไฟล์สำเร็จ: ${imageUrl}`
+              : data?.message ?? 'อัปโหลดไฟล์สำเร็จ'
+        }
       }));
 
       setSelectedFiles((previous) => ({ ...previous, [type]: null }));
@@ -679,7 +689,7 @@ export default function AdminPage() {
                     }))
                   }
                   className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  placeholder="/images/news/flood-warning.svg หรือ /uploads/news/ไฟล์ของคุณ.png"
+                  placeholder="https://res.cloudinary.com/ชื่อบัญชีของคุณ/image/upload/... หรือวาง URL รูปภาพที่มีอยู่"
                 />
                 <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-dashed border-slate-300 p-3">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -705,7 +715,7 @@ export default function AdminPage() {
                     </button>
                   </div>
                   <p className="text-xs text-slate-500">
-                    สามารถวางลิงก์ภาพที่มีอยู่ หรืออัปโหลดไฟล์ใหม่ ระบบจะบันทึกไว้ใน /uploads/{activeTab}/
+                    สามารถวางลิงก์ภาพที่มีอยู่ หรืออัปโหลดไฟล์ใหม่ ระบบจะบันทึกไว้ใน Cloudinary โฟลเดอร์ lpn/{activeTab}
                   </p>
                   {uploadMessages[activeTab] && (
                     <p

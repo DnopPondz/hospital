@@ -9,8 +9,6 @@
 # production
 /.next
 /out
-public/uploads/*
-!public/uploads/.gitkeep
 
 # misc
 .DS_Store

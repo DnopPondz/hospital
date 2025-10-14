@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs/promises';
 
 import { verifySessionToken } from '@/lib/auth';
+import { getCloudinary, isCloudinaryConfigured } from '@/lib/cloudinary';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,11 +23,39 @@ function sanitizeSegment(value, fallback) {
 }
 
 function sanitizeFilename(originalName) {
-  const baseName = originalName ? path.parse(originalName).name : 'upload';
-  const extension = originalName ? path.extname(originalName) : '';
+  const baseName = originalName ? originalName.replace(/\.[^.]+$/, '') : 'upload';
   const safeBase = baseName.replace(/[^a-zA-Z0-9-_]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  const safeExt = extension.toLowerCase();
-  return `${safeBase || 'file'}${safeExt}`;
+  return safeBase || 'file';
+}
+
+async function uploadToCloudinary(buffer, { scope, originalName }) {
+  if (!isCloudinaryConfigured) {
+    throw new Error('ยังไม่ได้ตั้งค่า Cloudinary กรุณาตรวจสอบตัวแปรสภาพแวดล้อม');
+  }
+
+  const cloudinary = getCloudinary();
+  const folder = `lpn/${scope}`;
+  const filename = `${Date.now()}-${sanitizeFilename(originalName)}`;
+
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: filename,
+        overwrite: false,
+        resource_type: 'image'
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(result);
+      }
+    );
+
+    uploadStream.end(buffer);
+  });
 }
 
 export async function POST(request) {
@@ -51,28 +78,26 @@ export async function POST(request) {
   }
 
   const originalName = file.name || 'upload';
-  const extension = path.extname(originalName).toLowerCase();
+  const extension = originalName.includes('.') ? `.${originalName.split('.').pop().toLowerCase()}` : '';
 
   if (!ALLOWED_EXTENSIONS.has(extension)) {
     return NextResponse.json({ message: 'รองรับเฉพาะไฟล์ภาพ (JPG, PNG, GIF, WEBP, SVG)' }, { status: 400 });
   }
 
-  const filename = `${Date.now()}-${sanitizeFilename(originalName)}`;
-  const uploadsDir = path.join(process.cwd(), 'public', 'uploads', scope);
-  const filePath = path.join(uploadsDir, filename);
+  try {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const result = await uploadToCloudinary(buffer, { scope, originalName });
 
-  await fs.mkdir(uploadsDir, { recursive: true });
-
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await fs.writeFile(filePath, buffer);
-
-  const publicPath = path.posix.join('/uploads', scope, filename);
-
-  return NextResponse.json(
-    {
-      message: 'อัปโหลดไฟล์สำเร็จ',
-      path: publicPath
-    },
-    { status: 201 }
-  );
+    return NextResponse.json(
+      {
+        message: 'อัปโหลดไฟล์สำเร็จ',
+        url: result.secure_url,
+        publicId: result.public_id
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    const message = error?.message ?? 'ไม่สามารถอัปโหลดไฟล์ได้';
+    return NextResponse.json({ message }, { status: 500 });
+  }
 }
