@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 function formatThaiDate(value) {
   try {
@@ -135,6 +135,10 @@ export default function AdminPage() {
   const [formData, setFormData] = useState({ news: createDefaultForm(), announcements: createDefaultForm() });
   const [scheduleDrafts, setScheduleDrafts] = useState({ news: {}, announcements: {} });
   const [processingKey, setProcessingKey] = useState(null);
+  const [selectedFiles, setSelectedFiles] = useState({ news: null, announcements: null });
+  const [uploading, setUploading] = useState({ news: false, announcements: false });
+  const [uploadMessages, setUploadMessages] = useState({ news: null, announcements: null });
+  const fileInputRefs = useRef({});
 
   const fetchContent = async (type) => {
     const endpoint = typeEndpoints[type];
@@ -199,6 +203,86 @@ export default function AdminPage() {
     await fetch('/api/auth/logout', { method: 'POST' });
     setAuthenticated(false);
     setFeedback({ type: 'success', message: 'ออกจากระบบแล้ว' });
+    setItems({ news: [], announcements: [] });
+    setFormData({ news: createDefaultForm(), announcements: createDefaultForm() });
+    setSelectedFiles({ news: null, announcements: null });
+    setUploading({ news: false, announcements: false });
+    setUploadMessages({ news: null, announcements: null });
+  };
+
+  const handleFileSelect = (type) => (event) => {
+    const file = event.target.files?.[0] ?? null;
+    setSelectedFiles((previous) => ({ ...previous, [type]: file }));
+
+    if (!file) {
+      setUploadMessages((previous) => ({ ...previous, [type]: null }));
+      return;
+    }
+
+    const sizeInKb = Math.max(1, Math.round(file.size / 1024));
+
+    setUploadMessages((previous) => ({
+      ...previous,
+      [type]: { kind: 'info', text: `เลือกไฟล์ ${file.name} (${sizeInKb} KB)` }
+    }));
+  };
+
+  const handleFileUpload = async (type) => {
+    const file = selectedFiles[type];
+
+    if (!file) {
+      setUploadMessages((previous) => ({
+        ...previous,
+        [type]: { kind: 'error', text: 'กรุณาเลือกไฟล์ภาพที่ต้องการอัปโหลด' }
+      }));
+      return;
+    }
+
+    setUploading((previous) => ({ ...previous, [type]: true }));
+    setUploadMessages((previous) => ({
+      ...previous,
+      [type]: { kind: 'info', text: 'กำลังอัปโหลดไฟล์…' }
+    }));
+
+    try {
+      const formDataPayload = new FormData();
+      formDataPayload.append('file', file);
+      formDataPayload.append('scope', type);
+
+      const response = await fetch('/api/uploads', {
+        method: 'POST',
+        body: formDataPayload
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data?.message ?? 'ไม่สามารถอัปโหลดไฟล์ได้');
+      }
+
+      setFormData((previous) => ({
+        ...previous,
+        [type]: { ...previous[type], image: data?.path ?? '' }
+      }));
+
+      setUploadMessages((previous) => ({
+        ...previous,
+        [type]: { kind: 'success', text: data?.message ?? 'อัปโหลดไฟล์สำเร็จ' }
+      }));
+
+      setSelectedFiles((previous) => ({ ...previous, [type]: null }));
+
+      if (fileInputRefs.current[type]) {
+        fileInputRefs.current[type].value = '';
+      }
+    } catch (error) {
+      setUploadMessages((previous) => ({
+        ...previous,
+        [type]: { kind: 'error', text: error.message ?? 'ไม่สามารถอัปโหลดไฟล์ได้' }
+      }));
+    } finally {
+      setUploading((previous) => ({ ...previous, [type]: false }));
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -582,7 +666,7 @@ export default function AdminPage() {
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="image">
-                  ลิงก์รูปประกอบ (เช่น /images/news/example.svg)
+                  รูปประกอบ
                 </label>
                 <input
                   id="image"
@@ -595,11 +679,51 @@ export default function AdminPage() {
                     }))
                   }
                   className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                  placeholder="/images/news/flood-warning.svg"
+                  placeholder="/images/news/flood-warning.svg หรือ /uploads/news/ไฟล์ของคุณ.png"
                 />
-                <p className="mt-1 text-xs text-slate-500">
-                  ระบุเส้นทางไฟล์ภายในเว็บไซต์หรือ URL ของภาพที่ต้องการแสดงพร้อมข่าว/ประกาศ
-                </p>
+                <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-dashed border-slate-300 p-3">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <input
+                      ref={(ref) => {
+                        if (ref) {
+                          fileInputRefs.current[activeTab] = ref;
+                        }
+                      }}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect(activeTab)}
+                      className="text-sm text-slate-600 file:mr-3 file:rounded-full file:border-0 file:bg-primary/10 file:px-4 file:py-2 file:text-sm file:font-medium file:text-primary hover:file:bg-primary/20"
+                      disabled={uploading[activeTab]}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleFileUpload(activeTab)}
+                      className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-neutral disabled:opacity-60"
+                      disabled={uploading[activeTab]}
+                    >
+                      {uploading[activeTab] ? 'กำลังอัปโหลด…' : 'อัปโหลดจากคอมพิวเตอร์'}
+                    </button>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    สามารถวางลิงก์ภาพที่มีอยู่ หรืออัปโหลดไฟล์ใหม่ ระบบจะบันทึกไว้ใน /uploads/{activeTab}/
+                  </p>
+                  {uploadMessages[activeTab] && (
+                    <p
+                      className={(() => {
+                        const kind = uploadMessages[activeTab]?.kind;
+                        if (kind === 'error') {
+                          return 'text-xs font-medium text-rose-600';
+                        }
+                        if (kind === 'success') {
+                          return 'text-xs font-medium text-emerald-600';
+                        }
+                        return 'text-xs font-medium text-slate-600';
+                      })()}
+                    >
+                      {uploadMessages[activeTab]?.text}
+                    </p>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="imageAlt">
