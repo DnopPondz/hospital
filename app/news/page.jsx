@@ -3,42 +3,27 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
+import NewsExplorer from '@/components/news/NewsExplorer';
 import { getNews } from '@/lib/news';
+import { formatThaiDate } from '@/lib/news-helpers';
 
 const focusAreas = [
-  { title: 'นโยบายและยุทธศาสตร์', description: 'สรุปการประชุมและทิศทางสำคัญจากกระทรวงและหน่วยงานส่วนกลาง' },
-  { title: 'โครงการและสิทธิประโยชน์', description: 'เปิดรับสมัครและแจ้งเตือนรอบใหม่ของโครงการช่วยเหลือประชาชน' },
-  { title: 'ประกาศเร่งด่วน', description: 'แจ้งเตือนภัยพิบัติ การปิดปรับปรุงระบบ และประกาศพิเศษที่ต้องทราบทันที' }
-];
-
-function formatThaiDate(value) {
-  try {
-    return new Intl.DateTimeFormat('th-TH', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(new Date(value));
-  } catch (error) {
-    return value;
+  {
+    title: 'นโยบายและยุทธศาสตร์',
+    description: 'สรุปการประชุมสำคัญ พร้อมไทม์ไลน์และไฟล์แนบ เพื่อส่งต่อให้หน่วยงานในภูมิภาค'
+  },
+  {
+    title: 'โครงการและสิทธิประโยชน์',
+    description: 'ติดตามรอบเปิดรับสมัคร แจ้งเงื่อนไขสำคัญ และสรุปกลุ่มเป้าหมายที่เกี่ยวข้อง'
+  },
+  {
+    title: 'ประกาศเร่งด่วน',
+    description: 'เตรียมชุดข้อมูลฉุกเฉิน พร้อมป้ายแจ้งเตือนระดับเร่งด่วนสำหรับเผยแพร่หลายช่องทาง'
   }
-}
-
-function groupByMonth(newsItems) {
-  return newsItems.reduce((groups, newsItem) => {
-    const date = new Date(newsItem.date);
-    const key = `${date.getFullYear()}-${date.getMonth()}`;
-    if (!groups[key]) {
-      groups[key] = { month: date.toLocaleString('th-TH', { month: 'long', year: 'numeric' }), items: [] };
-    }
-    groups[key].items.push(newsItem);
-    return groups;
-  }, {});
-}
+];
 
 export default async function NewsPage() {
   const newsItems = await getNews();
-  const grouped = groupByMonth(newsItems);
-  const monthKeys = Object.keys(grouped).sort((a, b) => (a > b ? -1 : 1));
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -56,7 +41,7 @@ export default async function NewsPage() {
                 อัปเดตข่าวสารภาครัฐแบบไทม์ไลน์เดียว ครบทุกกรมกอง
               </h1>
               <p className="max-w-2xl text-base leading-7 text-slate-600">
-                รวบรวมประกาศสำคัญ นโยบายใหม่ และแจ้งเตือนเร่งด่วน พร้อมเครื่องมือค้นหาและกรองข่าวตามหมวด หมายกำหนดการ และพื้นที่จังหวัด
+                รวบรวมประกาศสำคัญ นโยบายใหม่ และแจ้งเตือนเร่งด่วน พร้อมตัวกรองค้นหาแบบเรียลไทม์ เพื่อให้ทีมประชาสัมพันธ์และประชาชนเข้าถึงข้อมูลได้ตรงตามความสนใจ
               </p>
               <div className="grid gap-4 sm:grid-cols-3">
                 {focusAreas.map((item) => (
@@ -76,7 +61,9 @@ export default async function NewsPage() {
                       <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
                         {formatThaiDate(newsItem.date)}
                       </span>
-                      <span className="mt-1 text-sm font-semibold text-neutral">{newsItem.title}</span>
+                      <Link href={`/news/${newsItem.slug}`} className="mt-1 text-sm font-semibold text-neutral hover:text-primary">
+                        {newsItem.title}
+                      </Link>
                       <span className="mt-2 text-xs text-slate-500">{newsItem.summary}</span>
                     </li>
                   ))}
@@ -86,39 +73,7 @@ export default async function NewsPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-6 py-20">
-          <SectionTitle
-            title="คลังข่าวทั้งหมด"
-            subtitle="เรียงตามเดือนและสามารถค้นหาย้อนหลังได้ง่าย พร้อมข้อมูลสรุปให้อ่านเร็ว"
-          />
-          <div className="mt-12 space-y-10">
-            {monthKeys.map((key) => (
-              <div key={key} className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold text-neutral">{grouped[key].month}</h2>
-                  <span className="text-sm text-primary/80">ข่าวทั้งหมด {grouped[key].items.length} เรื่อง</span>
-                </div>
-                <div className="grid gap-6 lg:grid-cols-3">
-                  {grouped[key].items.map((newsItem) => (
-                    <article key={newsItem.slug} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
-                      <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                        {formatThaiDate(newsItem.date)}
-                      </p>
-                      <h3 className="mt-3 text-lg font-semibold text-neutral">{newsItem.title}</h3>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{newsItem.summary}</p>
-                      <Link
-                        href={`/news/${newsItem.slug}`}
-                        className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
-                      >
-                        อ่านรายละเอียดเพิ่มเติม <span aria-hidden="true">→</span>
-                      </Link>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <NewsExplorer newsItems={newsItems} />
 
         <section className="bg-[#f4faf6] py-20">
           <div className="mx-auto max-w-6xl px-6">
@@ -126,13 +81,13 @@ export default async function NewsPage() {
               <div className="space-y-4">
                 <SectionTitle
                   title="เครื่องมือค้นข่าว"
-                  subtitle="จำกัดผลลัพธ์ตามหมวด จังหวัด และระดับความสำคัญ เพื่อให้เจอข้อมูลที่ต้องการในไม่กี่วินาที"
+                  subtitle="จำกัดผลลัพธ์ตามหมวด จังหวัด ระดับความสำคัญ และแท็ก พร้อมสรุปสถิติการเข้าถึงเพื่อวางแผนประชาสัมพันธ์"
                 />
                 <p className="text-sm leading-6 text-slate-600">
-                  ระบบค้นหาจะมีตัวกรองอัตโนมัติตามแท็กที่หน่วยงานส่งเข้ามา เช่น นโยบาย โครงการ หรือประกาศเร่งด่วน พร้อมบันทึกการค้นหาที่ใช้บ่อยเพื่อเรียกใช้อีกครั้งได้ทันที
+                  ส่วนควบคุมด้านซ้ายสามารถบันทึกค่าตัวกรองที่ใช้บ่อย เพื่อช่วยให้ทีมส่วนกลางส่งต่อข่าวให้หน่วยงานจังหวัดหรืออำเภอได้รวดเร็วขึ้น พร้อมระบุระดับความสำคัญสำหรับสื่อแต่ละช่องทาง
                 </p>
                 <p className="text-sm leading-6 text-slate-600">
-                  สำหรับข้อมูลเชิงลึก สามารถดาวน์โหลดไฟล์สรุปหรือสตรีมการแถลงข่าวย้อนหลังได้จากคลังมัลติมีเดียในหน้าเดียวกัน
+                  ข้อมูลที่กรองแล้วสามารถดาวน์โหลดเป็นไฟล์ CSV หรือแชร์ลิงก์การค้นหาไปยังกลุ่มปฏิบัติงานผ่านระบบอินทราเน็ตเพื่อทำงานร่วมกันได้สะดวก (ฟีเจอร์กำลังพัฒนา)
                 </p>
               </div>
               <div className="section-wrapper space-y-6 p-8">
