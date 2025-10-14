@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import { getAnnouncements } from '@/lib/announcements';
+import { getNews } from '@/lib/news';
 
 const campaignHighlights = [
   {
@@ -83,9 +84,12 @@ function formatThaiDate(value) {
 }
 
 export default async function HomePage() {
-  const announcements = (await getAnnouncements()).slice(0, 3);
-  const featuredAnnouncement = announcements[0];
-  const secondaryAnnouncements = announcements.slice(1);
+  const [newsItems, announcementItems] = await Promise.all([getNews(), getAnnouncements()]);
+
+  const topNews = newsItems.slice(0, 4);
+  const featuredNews = topNews[0];
+  const secondaryNews = topNews.slice(1);
+  const latestAnnouncements = announcementItems.slice(0, 3);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -138,13 +142,13 @@ export default async function HomePage() {
             <div className="flex-1 space-y-6">
               <div className="section-wrapper space-y-4 p-8">
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">ข่าวเด่นประจำวัน</p>
-                {featuredAnnouncement ? (
+                {featuredNews ? (
                   <>
-                    <p className="text-sm font-semibold text-neutral">{formatThaiDate(featuredAnnouncement.date)}</p>
-                    <h2 className="text-xl font-semibold text-neutral">{featuredAnnouncement.title}</h2>
-                    <p className="text-sm leading-6 text-slate-600">{featuredAnnouncement.summary}</p>
+                    <p className="text-sm font-semibold text-neutral">{formatThaiDate(featuredNews.date)}</p>
+                    <h2 className="text-xl font-semibold text-neutral">{featuredNews.title}</h2>
+                    <p className="text-sm leading-6 text-slate-600">{featuredNews.summary}</p>
                     <Link
-                      href={`/announcements/${featuredAnnouncement.slug}`}
+                      href={`/news/${featuredNews.slug}`}
                       className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
                     >
                       อ่านรายละเอียด <span aria-hidden="true">→</span>
@@ -156,18 +160,18 @@ export default async function HomePage() {
                   </p>
                 )}
               </div>
-              {secondaryAnnouncements.length > 0 && (
+              {secondaryNews.length > 0 && (
                 <div className="rounded-3xl border border-[#dcece2] bg-white/80 p-6 shadow-sm">
                   <h3 className="text-sm font-semibold text-neutral">อัปเดตอื่น ๆ</h3>
                   <ul className="mt-4 space-y-3 text-sm text-slate-600">
-                    {secondaryAnnouncements.map((announcement) => (
-                      <li key={announcement.slug} className="flex items-start justify-between gap-4">
+                    {secondaryNews.map((newsItem) => (
+                      <li key={newsItem.slug} className="flex items-start justify-between gap-4">
                         <div>
-                          <p className="text-xs text-primary/70">{formatThaiDate(announcement.date)}</p>
-                          <p className="font-medium text-neutral">{announcement.title}</p>
+                          <p className="text-xs text-primary/70">{formatThaiDate(newsItem.date)}</p>
+                          <p className="font-medium text-neutral">{newsItem.title}</p>
                         </div>
                         <Link
-                          href={`/announcements/${announcement.slug}`}
+                          href={`/news/${newsItem.slug}`}
                           className="shrink-0 text-sm font-semibold text-primary"
                         >
                           อ่านต่อ
@@ -198,8 +202,8 @@ export default async function HomePage() {
                 </Link>
               </div>
               <div className="flex-1 space-y-6">
-                {announcements.length > 0 ? (
-                  announcements.map((announcement) => (
+                {latestAnnouncements.length > 0 ? (
+                  latestAnnouncements.map((announcement) => (
                     <article
                       key={announcement.slug}
                       className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:border-primary/60"
@@ -214,7 +218,7 @@ export default async function HomePage() {
                   ))
                 ) : (
                   <div className="rounded-3xl border border-dashed border-[#dcece2] bg-white/70 p-6 text-sm text-slate-500">
-                    ขณะนี้ยังไม่มีข่าวเผยแพร่ใหม่ ระบบจะแสดงรายการข่าวทันทีที่มีการประกาศเพิ่มเติม
+                    ขณะนี้ยังไม่มีประกาศเผยแพร่ใหม่ ระบบจะแสดงรายการทันทีที่มีการอัปเดตเพิ่มเติม
                   </div>
                 )}
               </div>

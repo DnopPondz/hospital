@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
-import { getAnnouncements } from '@/lib/announcements';
+import { getNews } from '@/lib/news';
 
 const focusAreas = [
   { title: 'นโยบายและยุทธศาสตร์', description: 'สรุปการประชุมและทิศทางสำคัญจากกระทรวงและหน่วยงานส่วนกลาง' },
@@ -23,21 +23,21 @@ function formatThaiDate(value) {
   }
 }
 
-function groupByMonth(announcements) {
-  return announcements.reduce((groups, announcement) => {
-    const date = new Date(announcement.date);
+function groupByMonth(newsItems) {
+  return newsItems.reduce((groups, newsItem) => {
+    const date = new Date(newsItem.date);
     const key = `${date.getFullYear()}-${date.getMonth()}`;
     if (!groups[key]) {
       groups[key] = { month: date.toLocaleString('th-TH', { month: 'long', year: 'numeric' }), items: [] };
     }
-    groups[key].items.push(announcement);
+    groups[key].items.push(newsItem);
     return groups;
   }, {});
 }
 
 export default async function NewsPage() {
-  const announcements = await getAnnouncements();
-  const grouped = groupByMonth(announcements);
+  const newsItems = await getNews();
+  const grouped = groupByMonth(newsItems);
   const monthKeys = Object.keys(grouped).sort((a, b) => (a > b ? -1 : 1));
 
   return (
@@ -71,13 +71,13 @@ export default async function NewsPage() {
               <div className="section-wrapper space-y-6 p-8">
                 <h2 className="text-lg font-semibold text-neutral">ข่าวเด่นประจำวัน</h2>
                 <ul className="space-y-4 text-sm text-slate-600">
-                  {announcements.slice(0, 4).map((announcement) => (
-                    <li key={announcement.slug} className="flex flex-col rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                  {newsItems.slice(0, 4).map((newsItem) => (
+                    <li key={newsItem.slug} className="flex flex-col rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm">
                       <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                        {formatThaiDate(announcement.date)}
+                        {formatThaiDate(newsItem.date)}
                       </span>
-                      <span className="mt-1 text-sm font-semibold text-neutral">{announcement.title}</span>
-                      <span className="mt-2 text-xs text-slate-500">{announcement.summary}</span>
+                      <span className="mt-1 text-sm font-semibold text-neutral">{newsItem.title}</span>
+                      <span className="mt-2 text-xs text-slate-500">{newsItem.summary}</span>
                     </li>
                   ))}
                 </ul>
@@ -96,18 +96,18 @@ export default async function NewsPage() {
               <div key={key} className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-semibold text-neutral">{grouped[key].month}</h2>
-                  <span className="text-sm text-primary/80">ประกาศทั้งหมด {grouped[key].items.length} ฉบับ</span>
+                  <span className="text-sm text-primary/80">ข่าวทั้งหมด {grouped[key].items.length} เรื่อง</span>
                 </div>
                 <div className="grid gap-6 lg:grid-cols-3">
-                  {grouped[key].items.map((announcement) => (
-                    <article key={announcement.slug} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                  {grouped[key].items.map((newsItem) => (
+                    <article key={newsItem.slug} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
                       <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                        {formatThaiDate(announcement.date)}
+                        {formatThaiDate(newsItem.date)}
                       </p>
-                      <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
+                      <h3 className="mt-3 text-lg font-semibold text-neutral">{newsItem.title}</h3>
+                      <p className="mt-3 text-sm leading-6 text-slate-600">{newsItem.summary}</p>
                       <Link
-                        href={`/announcements/${announcement.slug}`}
+                        href={`/news/${newsItem.slug}`}
                         className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
                       >
                         อ่านรายละเอียดเพิ่มเติม <span aria-hidden="true">→</span>
