@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 
@@ -134,8 +135,9 @@ export default function NewsExplorer({ newsItems }) {
                 </div>
                 <div className="grid gap-6 lg:grid-cols-3">
                   {group.items.map((newsItem) => (
-                    <article key={newsItem.slug} className="flex h-full flex-col justify-between rounded-3xl border border-[#dcece2] bg-white/95 p-6 shadow-sm">
-                      <div className="space-y-3">
+                    <article key={newsItem.slug} className="flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#dcece2] bg-white/95 shadow-sm">
+                      <NewsCardMedia image={newsItem.image} alt={newsItem.imageAlt ?? newsItem.title} title={newsItem.title} />
+                      <div className="space-y-3 p-6">
                         <div className="flex flex-wrap gap-2">
                           <Pill tone={newsItem.importance === 'urgent' ? 'warning' : newsItem.importance === 'high' ? 'accent' : 'default'}>
                             {importanceLabel(newsItem.importance)}
@@ -149,7 +151,7 @@ export default function NewsExplorer({ newsItems }) {
                         <h3 className="text-lg font-semibold text-neutral">{newsItem.title}</h3>
                         <p className="text-sm leading-6 text-slate-600">{newsItem.summary}</p>
                       </div>
-                      <div className="mt-6 flex flex-col gap-4">
+                      <div className="mt-2 flex flex-col gap-4 px-6 pb-6">
                         {newsItem.tags?.length ? (
                           <div className="flex flex-wrap gap-2">
                             {newsItem.tags.map((tag) => (
@@ -249,6 +251,24 @@ function ActiveFilters({ filters, setFilters, hasResults }) {
         </button>
       </div>
       {!hasResults ? <p className="mt-3 text-xs text-amber-600">ไม่พบข่าวที่ตรงกับเงื่อนไข ลองปรับตัวกรองหรือล้างทั้งหมด</p> : null}
+    </div>
+  );
+}
+
+function NewsCardMedia({ image, alt, title }) {
+  const fallbackLabel = title?.slice(0, 32) ?? 'ข่าวประชาสัมพันธ์';
+
+  if (image) {
+    return (
+      <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+        <Image src={image} alt={alt ?? fallbackLabel} fill className="object-cover" sizes="(min-width: 1024px) 360px, 100vw" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex aspect-[16/9] w-full items-center justify-center bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 text-sm font-semibold text-primary">
+      {fallbackLabel}
     </div>
   );
 }

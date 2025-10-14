@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eff6ff" />
+      <stop offset="100%" stop-color="#dbeafe" />
+    </linearGradient>
+    <linearGradient id="device" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="button" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#bg2)" />
+  <g transform="translate(180 90)">
+    <rect x="0" y="0" width="440" height="320" rx="36" fill="#fff" opacity="0.85" />
+    <rect x="40" y="40" width="360" height="240" rx="28" fill="url(#device)" />
+    <rect x="70" y="70" width="120" height="180" rx="20" fill="#1d4ed8" opacity="0.55" />
+    <rect x="220" y="90" width="160" height="40" rx="14" fill="#bfdbfe" />
+    <rect x="220" y="150" width="160" height="40" rx="14" fill="#93c5fd" />
+    <rect x="220" y="210" width="160" height="40" rx="14" fill="#3b82f6" />
+    <rect x="120" y="280" width="200" height="44" rx="22" fill="url(#button)" />
+    <text x="220" y="310" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="20" fill="#0f172a" font-weight="600">Connect</text>
+  </g>
+  <text x="50%" y="430" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="34" fill="#1e40af" font-weight="600">ThaiGov Connect พร้อมใช้งาน</text>
+</svg>

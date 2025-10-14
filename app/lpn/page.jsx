@@ -18,6 +18,8 @@ const createDefaultForm = () => ({
   title: '',
   summary: '',
   content: '',
+  image: '',
+  imageAlt: '',
   date: '',
   displayFrom: '',
   displayUntil: ''
@@ -212,7 +214,9 @@ export default function AdminPage() {
       ...currentForm,
       date: currentForm.date || null,
       displayFrom: currentForm.displayFrom || null,
-      displayUntil: currentForm.displayUntil || null
+      displayUntil: currentForm.displayUntil || null,
+      image: currentForm.image || null,
+      imageAlt: currentForm.imageAlt || null
     };
 
     const response = await fetch(endpoint, {
@@ -574,6 +578,45 @@ export default function AdminPage() {
                     }))
                   }
                   className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-600" htmlFor="image">
+                  ลิงก์รูปประกอบ (เช่น /images/news/example.svg)
+                </label>
+                <input
+                  id="image"
+                  type="text"
+                  value={currentForm.image}
+                  onChange={(event) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      [activeTab]: { ...previous[activeTab], image: event.target.value }
+                    }))
+                  }
+                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  placeholder="/images/news/flood-warning.svg"
+                />
+                <p className="mt-1 text-xs text-slate-500">
+                  ระบุเส้นทางไฟล์ภายในเว็บไซต์หรือ URL ของภาพที่ต้องการแสดงพร้อมข่าว/ประกาศ
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-600" htmlFor="imageAlt">
+                  คำอธิบายรูป (เพื่อการเข้าถึง)
+                </label>
+                <input
+                  id="imageAlt"
+                  type="text"
+                  value={currentForm.imageAlt}
+                  onChange={(event) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      [activeTab]: { ...previous[activeTab], imageAlt: event.target.value }
+                    }))
+                  }
+                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  placeholder="คำอธิบายรูปเพื่อให้ผู้อ่านเข้าใจ"
                 />
               </div>
               <div>

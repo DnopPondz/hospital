@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ecfdf5" />
+      <stop offset="100%" stop-color="#d1fae5" />
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f0fdf4" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#bg)" />
+  <g transform="translate(120 100)">
+    <rect x="0" y="0" width="560" height="320" rx="32" fill="url(#card)" stroke="#bbf7d0" stroke-width="4" />
+    <rect x="60" y="60" width="440" height="40" rx="12" fill="#bbf7d0" opacity="0.6" />
+    <rect x="60" y="120" width="360" height="24" rx="12" fill="#34d399" opacity="0.8" />
+    <rect x="60" y="160" width="360" height="24" rx="12" fill="#34d399" opacity="0.55" />
+    <rect x="60" y="200" width="360" height="24" rx="12" fill="#34d399" opacity="0.35" />
+    <rect x="420" y="120" width="80" height="110" rx="20" fill="#0ea5e9" opacity="0.8" />
+    <path d="M450 150 L460 170 L490 130" fill="none" stroke="#f8fafc" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="460" cy="230" r="26" fill="#14b8a6" />
+    <text x="460" y="238" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="24" fill="#ecfeff" font-weight="600">2567</text>
+  </g>
+  <text x="50%" y="420" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="34" fill="#047857" font-weight="600">มาตรการบริการประชาชนเชิงรุก</text>
+</svg>

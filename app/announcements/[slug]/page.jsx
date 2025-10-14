@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -56,6 +57,20 @@ export default async function AnnouncementPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={announcement.title} subtitle={formatThaiDate(announcement.date)} />
+              {announcement.image ? (
+                <div className="mt-6 overflow-hidden rounded-3xl bg-slate-100">
+                  <div className="relative aspect-[16/9]">
+                    <Image
+                      src={announcement.image}
+                      alt={announcement.imageAlt ?? announcement.title}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 720px, 100vw"
+                      priority
+                    />
+                  </div>
+                </div>
+              ) : null}
               <article className="mt-8 space-y-5 text-base leading-7 text-slate-700">
                 {contentParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>

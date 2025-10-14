@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -46,6 +47,20 @@ export default async function NewsDetailPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={newsItem.title} subtitle={formatThaiDate(newsItem.date)} />
+              {newsItem.image ? (
+                <div className="mt-6 overflow-hidden rounded-3xl bg-slate-100">
+                  <div className="relative aspect-[16/9]">
+                    <Image
+                      src={newsItem.image}
+                      alt={newsItem.imageAlt ?? newsItem.title}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 720px, 100vw"
+                      priority
+                    />
+                  </div>
+                </div>
+              ) : null}
               <div className="mt-6 flex flex-wrap items-center gap-3 text-xs font-medium text-slate-600">
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-primary">
                   {importanceLabel(newsItem.importance)}

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#bg5)" />
+  <g transform="translate(160 120)">
+    <rect x="0" y="0" width="480" height="280" rx="36" fill="#fff" opacity="0.9" />
+    <rect x="60" y="50" width="360" height="120" rx="24" fill="url(#panel)" />
+    <rect x="100" y="200" width="280" height="36" rx="18" fill="#bae6fd" />
+    <rect x="120" y="212" width="120" height="12" rx="6" fill="#0ea5e9" opacity="0.6" />
+    <circle cx="160" cy="110" r="24" fill="#f8fafc" />
+    <circle cx="320" cy="110" r="24" fill="#f8fafc" />
+    <rect x="210" y="100" width="60" height="20" rx="10" fill="#e0f2fe" />
+    <rect x="210" y="70" width="60" height="16" rx="8" fill="#f0f9ff" />
+  </g>
+  <text x="50%" y="420" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="34" fill="#0f172a" font-weight="600">ระบบร้องเรียนออนไลน์ใหม่</text>
+</svg>

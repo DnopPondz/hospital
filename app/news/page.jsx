@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Navbar from '@/components/Navbar';
@@ -22,8 +23,34 @@ const focusAreas = [
   }
 ];
 
+function Thumbnail({ image, alt, title }) {
+  const fallbackLabel = title?.slice(0, 20) ?? 'ข่าวประชาสัมพันธ์';
+
+  if (image) {
+    return (
+      <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+        <Image
+          src={image}
+          alt={alt ?? fallbackLabel}
+          fill
+          className="object-cover"
+          sizes="112px"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-20 w-28 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 text-xs font-semibold text-primary">
+      {fallbackLabel}
+    </div>
+  );
+}
+
 export default async function NewsPage() {
   const newsItems = await getNews();
+  const highlightedNews = newsItems.slice(0, 4);
+  const leadNews = highlightedNews[0];
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -55,16 +82,34 @@ export default async function NewsPage() {
             <div className="flex-1">
               <div className="section-wrapper space-y-6 p-8">
                 <h2 className="text-lg font-semibold text-neutral">ข่าวเด่นประจำวัน</h2>
+                {leadNews?.image ? (
+                  <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-white/70">
+                    <Image
+                      src={leadNews.image}
+                      alt={leadNews.imageAlt ?? leadNews.title}
+                      fill
+                      className="object-cover"
+                      sizes="(min-width: 1024px) 420px, 100vw"
+                      priority
+                    />
+                  </div>
+                ) : null}
                 <ul className="space-y-4 text-sm text-slate-600">
-                  {newsItems.slice(0, 4).map((newsItem) => (
-                    <li key={newsItem.slug} className="flex flex-col rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm">
-                      <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                        {formatThaiDate(newsItem.date)}
-                      </span>
-                      <Link href={`/news/${newsItem.slug}`} className="mt-1 text-sm font-semibold text-neutral hover:text-primary">
-                        {newsItem.title}
-                      </Link>
-                      <span className="mt-2 text-xs text-slate-500">{newsItem.summary}</span>
+                  {highlightedNews.map((newsItem) => (
+                    <li key={newsItem.slug} className="flex gap-4 rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                      <Thumbnail image={newsItem.image} alt={newsItem.imageAlt ?? newsItem.title} title={newsItem.title} />
+                      <div className="flex-1">
+                        <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
+                          {formatThaiDate(newsItem.date)}
+                        </span>
+                        <Link
+                          href={`/news/${newsItem.slug}`}
+                          className="mt-1 block text-sm font-semibold text-neutral hover:text-primary"
+                        >
+                          {newsItem.title}
+                        </Link>
+                        <span className="mt-2 block text-xs text-slate-500">{newsItem.summary}</span>
+                      </div>
                     </li>
                   ))}
                 </ul>

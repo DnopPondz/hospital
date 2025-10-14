@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ec5ff" />
+      <stop offset="100%" stop-color="#d7ecff" />
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3a9bdc" />
+      <stop offset="100%" stop-color="#59c3ff" />
+    </linearGradient>
+    <linearGradient id="alert" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff6a6a" />
+      <stop offset="100%" stop-color="#ffa36e" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="300" fill="url(#sky)" />
+  <rect y="280" width="800" height="240" fill="url(#water)" />
+  <g opacity="0.45">
+    <ellipse cx="150" cy="420" rx="160" ry="45" fill="#ffffff" />
+    <ellipse cx="400" cy="420" rx="200" ry="55" fill="#ffffff" />
+    <ellipse cx="650" cy="420" rx="160" ry="45" fill="#ffffff" />
+  </g>
+  <g transform="translate(260 150)">
+    <path d="M140 0 L280 240 H0 Z" fill="url(#alert)" />
+    <rect x="118" y="90" width="44" height="90" rx="6" fill="#fff" />
+    <circle cx="140" cy="205" r="14" fill="#fff" />
+  </g>
+  <text x="50%" y="80" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="44" fill="#155e75" font-weight="600">ประกาศเตือนภัยน้ำท่วม</text>
+  <text x="50%" y="120" text-anchor="middle" font-family="Prompt, 'Sarabun', sans-serif" font-size="20" fill="#155e75" opacity="0.8">เฝ้าระวังพื้นที่ภาคเหนือและติดตามสถานการณ์</text>
+</svg>

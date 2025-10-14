@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Navbar from '@/components/Navbar';
@@ -144,6 +145,18 @@ export default async function HomePage() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">ข่าวเด่นประจำวัน</p>
                 {featuredNews ? (
                   <>
+                    {featuredNews.image ? (
+                      <div className="relative aspect-[16/9] overflow-hidden rounded-2xl bg-slate-100">
+                        <Image
+                          src={featuredNews.image}
+                          alt={featuredNews.imageAlt ?? featuredNews.title}
+                          fill
+                          className="object-cover"
+                          sizes="(min-width: 1024px) 480px, 100vw"
+                          priority
+                        />
+                      </div>
+                    ) : null}
                     <p className="text-sm font-semibold text-neutral">{formatThaiDate(featuredNews.date)}</p>
                     <h2 className="text-xl font-semibold text-neutral">{featuredNews.title}</h2>
                     <p className="text-sm leading-6 text-slate-600">{featuredNews.summary}</p>
@@ -165,17 +178,29 @@ export default async function HomePage() {
                   <h3 className="text-sm font-semibold text-neutral">อัปเดตอื่น ๆ</h3>
                   <ul className="mt-4 space-y-3 text-sm text-slate-600">
                     {secondaryNews.map((newsItem) => (
-                      <li key={newsItem.slug} className="flex items-start justify-between gap-4">
-                        <div>
+                      <li key={newsItem.slug} className="flex items-start gap-4">
+                        <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                          {newsItem.image ? (
+                            <Image
+                              src={newsItem.image}
+                              alt={newsItem.imageAlt ?? newsItem.title}
+                              fill
+                              className="object-cover"
+                              sizes="96px"
+                            />
+                          ) : (
+                            <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/20 via-primary/10 to-accent/20 text-[11px] font-semibold text-primary">
+                              {(newsItem.title ?? 'ข่าวเด่น').slice(0, 20)}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-1 flex-col gap-1">
                           <p className="text-xs text-primary/70">{formatThaiDate(newsItem.date)}</p>
                           <p className="font-medium text-neutral">{newsItem.title}</p>
+                          <Link href={`/news/${newsItem.slug}`} className="text-xs font-semibold text-primary">
+                            อ่านต่อ
+                          </Link>
                         </div>
-                        <Link
-                          href={`/news/${newsItem.slug}`}
-                          className="shrink-0 text-sm font-semibold text-primary"
-                        >
-                          อ่านต่อ
-                        </Link>
                       </li>
                     ))}
                   </ul>
@@ -206,14 +231,27 @@ export default async function HomePage() {
                   latestAnnouncements.map((announcement) => (
                     <article
                       key={announcement.slug}
-                      className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:border-primary/60"
+                      className="overflow-hidden rounded-3xl border border-[#dcece2] bg-white/90 shadow-sm transition hover:border-primary/60"
                     >
-                      <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{formatThaiDate(announcement.date)}</p>
-                      <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
-                      <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                        อ่านประกาศฉบับเต็ม <span aria-hidden="true">→</span>
-                      </Link>
+                      {announcement.image ? (
+                        <div className="relative aspect-[16/9] overflow-hidden">
+                          <Image
+                            src={announcement.image}
+                            alt={announcement.imageAlt ?? announcement.title}
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 320px, 100vw"
+                          />
+                        </div>
+                      ) : null}
+                      <div className="p-6">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{formatThaiDate(announcement.date)}</p>
+                        <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
+                        <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
+                        <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                          อ่านประกาศฉบับเต็ม <span aria-hidden="true">→</span>
+                        </Link>
+                      </div>
                     </article>
                   ))
                 ) : (
