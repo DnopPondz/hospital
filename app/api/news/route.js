@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { addAnnouncement, getAnnouncements } from '@/lib/announcements';
+import { addNews, getNews } from '@/lib/news';
 import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic';
 export async function GET(request) {
   const token = request.cookies.get('admin_token')?.value;
   const includeHidden = verifySessionToken(token);
-  const announcements = await getAnnouncements({ includeHidden });
-  return NextResponse.json(announcements);
+  const news = await getNews({ includeHidden });
+  return NextResponse.json(news);
 }
 
 export async function POST(request) {
@@ -22,8 +22,8 @@ export async function POST(request) {
   const { title, summary, content, date, displayFrom, displayUntil } = await request.json();
 
   try {
-    const announcement = await addAnnouncement({ title, summary, content, date, displayFrom, displayUntil });
-    return NextResponse.json(announcement, { status: 201 });
+    const newsItem = await addNews({ title, summary, content, date, displayFrom, displayUntil });
+    return NextResponse.json(newsItem, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }

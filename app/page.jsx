@@ -3,112 +3,71 @@ import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
-import ServiceCard from '@/components/ServiceCard';
-import StatCard from '@/components/StatCard';
-import ContactForm from '@/components/ContactForm';
 import { getAnnouncements } from '@/lib/announcements';
+import { getNews } from '@/lib/news';
 
-const services = [
+const campaignHighlights = [
   {
-    icon: '🪪',
-    title: 'บริการบัตรประชาชน',
-    description: 'จองคิวทำบัตรใหม่ แจ้งเปลี่ยนแปลงข้อมูล และตรวจสอบสถานะได้ภายในไม่กี่คลิก',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer gravida molestie mauris, eget mattis velit mattis vitae. Vivamus vehicula, turpis non aliquam pellentesque, urna tellus ornare erat, vitae dictum orci lectus eget metus. Sed at sodales nulla. Maecenas pellentesque vitae neque vitae ultrices. Donec efficitur, sapien at lobortis fermentum, orci arcu semper justo, vitae vulputate justo orci condimentum turpis.',
-        'Suspendisse tempor arcu ut nisi viverra, vel vehicula nisl fringilla. Duis sed varius nisl. Sed tincidunt tristique purus sed dignissim. Nulla ullamcorper tincidunt erat, nec bibendum erat rhoncus a. Curabitur tincidunt, orci sit amet auctor ultricies, turpis est gravida erat, posuere varius metus velit in elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer ac ligula venenatis, tempus orci ac, faucibus lorem.',
-        'Mauris finibus placerat nisi, vitae consequat magna commodo non. Curabitur sed fringilla odio, vitae ultricies quam. Vivamus euismod dapibus eros, id sollicitudin enim tincidunt viverra. Integer suscipit, enim ac ultrices tristique, ligula mi lacinia arcu, a vulputate eros arcu id nisi. Cras feugiat scelerisque felis eu tincidunt.'
-      ],
-      highlights: [
-        'ขั้นตอนการยื่นคำร้องและจองคิวออนไลน์ภายใน 5 นาที',
-        'ระบบติดตามสถานะแบบเรียลไทม์พร้อมแจ้งเตือนผ่านอีเมลและ SMS',
-        'คำแนะนำการเตรียมเอกสารสำหรับกรณีบัตรหายหรือบัตรหมดอายุ'
-      ],
-      footer:
-        'Nam consequat, neque a rutrum commodo, magna arcu suscipit ipsum, id efficitur eros risus ac enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.'
-    }
+    title: 'สัปดาห์สุขภาพครอบครัวไทย',
+    description:
+      'รวมกิจกรรมให้ความรู้เรื่องวัคซีน การดูแลผู้สูงอายุ และการป้องกันโรคไม่ติดต่อในทุกจังหวัด',
+    location: 'ทั่วประเทศ',
+    period: '1 – 7 กรกฎาคม 2567'
   },
   {
-    icon: '💼',
-    title: 'สิทธิและสวัสดิการ',
-    description: 'ตรวจสอบสิทธิประโยชน์และสมัครรับสวัสดิการจากทุกหน่วยงานในที่เดียว',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Praesent posuere nunc id pretium euismod. Integer a ligula risus. Integer ac lacus a turpis aliquam tempus quis vel nisi. Morbi eu nibh non dolor tincidunt lobortis. Nulla ultricies libero sed iaculis bibendum. Nunc finibus quam libero, sed malesuada augue condimentum ut. Vestibulum id mauris varius, vehicula enim vitae, accumsan lacus.',
-        'Aliquam erat volutpat. Donec quis tincidunt dui. Duis varius risus ac odio tincidunt tristique. Pellentesque vel sapien a augue interdum viverra vel eget libero. Vivamus mollis leo eget tellus volutpat blandit. Pellentesque egestas orci vitae varius feugiat. In luctus tortor at laoreet egestas. Nunc aliquet iaculis sapien, sed efficitur lacus iaculis sed.',
-        'Donec aliquet, risus luctus euismod consequat, massa mi tincidunt erat, eu porta libero magna sed enim. Duis sit amet dolor vehicula, euismod risus non, varius elit. Duis vehicula lacus sed auctor sodales. Etiam sit amet ipsum neque. Integer gravida nibh sit amet odio blandit, porta semper leo egestas.'
-      ],
-      highlights: [
-        'คู่มือเปรียบเทียบสิทธิจากหน่วยงานหลักกว่า 20 แห่ง',
-        'ตัวช่วยกรอกแบบฟอร์มพร้อมบันทึกเวอร์ชันร่างอัตโนมัติ',
-        'เทมเพลตคำถามที่พบบ่อยเพื่อเตรียมข้อมูลล่วงหน้า'
-      ],
-      footer:
-        'Etiam tincidunt lectus id tortor mattis, vitae ullamcorper libero hendrerit. Nunc vitae laoreet lacus, eu interdum urna.'
-    }
+    title: 'ศูนย์รับเรื่องร้องเรียนออนไลน์',
+    description:
+      'เปิดช่องทางใหม่สำหรับรับเรื่องร้องเรียนเกี่ยวกับบริการสาธารณสุข พร้อมทีมเจ้าหน้าที่ตอบกลับภายใน 24 ชั่วโมง',
+    location: 'ระบบ ThaiGov Connect',
+    period: 'ให้บริการทุกวัน'
   },
   {
-    icon: '🏥',
-    title: 'บริการด้านสาธารณสุข',
-    description: 'จองคิวโรงพยาบาล ค้นหาแพทย์เฉพาะทาง และดูประวัติการรักษาออนไลน์',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Integer nec mauris in nisl pharetra hendrerit. Sed auctor nibh odio, at scelerisque ligula vestibulum nec. Morbi tempus nisl quis sapien rhoncus rutrum. Morbi vitae tortor non massa malesuada feugiat. Donec lobortis efficitur ultrices. Pellentesque fringilla, risus eu euismod condimentum, lacus metus tempus velit, vel dignissim sem neque nec mauris.',
-        'Suspendisse condimentum justo vitae nunc finibus, non auctor erat aliquam. Donec sed nibh volutpat, efficitur libero in, tincidunt justo. Integer sapien ipsum, faucibus sit amet semper ut, ullamcorper quis velit. Sed sed enim id nibh imperdiet vulputate at sed elit. Pellentesque vel fringilla orci. Praesent semper gravida vehicula.',
-        'Curabitur viverra ornare erat, in efficitur risus tempor sit amet. Proin sed efficitur arcu. Cras bibendum urna non turpis gravida, sed rhoncus tellus aliquet. Aenean tempus condimentum nisi sed vulputate. Vivamus ultricies leo eget dolor dignissim molestie.'
-      ],
-      highlights: [
-        'ระบบแสดงเวลารอเฉลี่ยของแต่ละโรงพยาบาลแบบเรียลไทม์',
-        'ปฏิทินอัจฉริยะสำหรับซิงก์นัดหมายกับโทรศัพท์มือถือ',
-        'ชุดคำแนะนำการเตรียมตัวก่อนพบแพทย์และหลังการรักษา'
-      ],
-      footer:
-        'Sed sit amet viverra enim. Donec sit amet justo ac urna dignissim faucibus. Phasellus pulvinar ac nunc ac viverra.'
-    }
-  },
-  {
-    icon: '📄',
-    title: 'ยื่นคำร้องออนไลน์',
-    description: 'ยื่นคำขอเอกสารราชการและติดตามความคืบหน้าแบบเรียลไทม์',
-    link: '#',
-    details: {
-      paragraphs: [
-        'Duis finibus libero vitae dolor porttitor vulputate. Sed ut velit id lorem congue fermentum. Aliquam consectetur sem ut fermentum pulvinar. Vestibulum lacinia libero quis ex rutrum, sit amet feugiat enim dictum. Sed tincidunt aliquet porta. Nulla facilisi. Sed et velit nunc. Nulla facilisi.',
-        'Quisque at risus nibh. Nulla tempus sodales interdum. Nullam venenatis bibendum ante, sit amet ullamcorper arcu viverra ut. Integer consequat vitae nisl ut malesuada. Fusce hendrerit neque eget dolor posuere egestas. Pellentesque at nulla non arcu facilisis egestas.',
-        'Nam eu magna tincidunt, ultricies nibh non, tempus metus. Praesent et urna vitae libero sollicitudin varius. Donec maximus, ligula vitae mollis convallis, sem ante tristique justo, ac dictum quam elit sit amet risus.'
-      ],
-      highlights: [
-        'ระบบแนะนำฟอร์มที่เหมาะสมตามประเภทคำร้อง',
-        'การแนบไฟล์เอกสารที่ปลอดภัยพร้อมตรวจสอบความครบถ้วน',
-        'สรุปสถานะการพิจารณาแต่ละหน่วยงานในหน้าเดียว'
-      ],
-      footer:
-        'Morbi a sem porttitor, sollicitudin nibh sit amet, maximus turpis. Cras aliquet nunc nec magna ullamcorper, quis pharetra erat vulputate.'
-    }
+    title: 'โครงการหน่วยแพทย์เคลื่อนที่',
+    description:
+      'ให้บริการตรวจสุขภาพเบื้องต้น จ่ายยา และให้คำปรึกษาในพื้นที่ห่างไกลเพื่อให้ประชาชนเข้าถึงการรักษาได้ทั่วถึง',
+    location: 'ภาคเหนือและอีสาน',
+    period: 'ตลอดไตรมาส 3/2567'
   }
 ];
 
-const stats = [
-  { value: '2.8M+', label: 'บัญชีประชาชนที่ใช้งานระบบ' },
-  { value: '180+', label: 'บริการภาครัฐที่เชื่อมต่อ' },
-  { value: '98%', label: 'ความพึงพอใจจากแบบสำรวจล่าสุด' }
+const agencyOverview = [
+  {
+    name: 'สำนักงานปลัดกระทรวงสาธารณสุข',
+    summary: 'ประสานการดำเนินงานของกรมในสังกัด กำกับนโยบาย และติดตามประสิทธิภาพการให้บริการประชาชน',
+    focus: 'ยุทธศาสตร์ภาพรวมและการบริหารจัดการ'
+  },
+  {
+    name: 'กรมสนับสนุนบริการสุขภาพ',
+    summary: 'ดูแลมาตรฐานสถานพยาบาลทั้งภาครัฐและเอกชน พร้อมส่งเสริมบริการแพทย์ทางไกลและนวัตกรรม',
+    focus: 'กำกับมาตรฐานและนวัตกรรมบริการ'
+  },
+  {
+    name: 'กรมควบคุมโรค',
+    summary: 'ติดตามสถานการณ์โรคติดต่อ เฝ้าระวังโรคระบาด และให้คำแนะนำเชิงนโยบายในการป้องกันและควบคุมโรค',
+    focus: 'ป้องกันควบคุมโรคและภัยสุขภาพ'
+  },
+  {
+    name: 'กรมการแพทย์',
+    summary: 'กำหนดมาตรฐานทางการแพทย์ระดับประเทศ พร้อมให้บริการการแพทย์เฉพาะทางผ่านสถาบันในสังกัด',
+    focus: 'บริการการแพทย์เฉพาะทางและมาตรฐานวิชาชีพ'
+  }
 ];
 
-const digitalServices = [
+const mediaChannels = [
   {
-    title: 'ศูนย์รวมการแจ้งเตือน',
-    description: 'รับการแจ้งเตือนสําคัญจากทุกหน่วยงานผ่านศูนย์เดียว และตั้งค่าความถี่ได้ตามต้องการ'
+    title: 'ข่าวด่วนและประกาศทางการ',
+    description: 'ติดตามประกาศฉบับเต็มและเอกสารสำคัญจากศูนย์ข่าวกระทรวงได้ที่หน้า ข่าว และระบบแจ้งเตือน',
+    href: '/news'
   },
   {
-    title: 'แดชบอร์ดส่วนบุคคล',
-    description: 'ติดตามสถานะคำร้อง เอกสารที่ต้องต่ออายุ และข่าวสารเฉพาะกลุ่ม'
+    title: 'ข้อมูลเชิงลึกหน่วยงาน',
+    description: 'ดูโครงสร้างบุคลากร หน้าที่หลัก และหน่วยงานในสังกัดทั้งหมดได้ในหน้าโครงสร้างบุคลากร',
+    href: '/structure'
   },
   {
-    title: 'ผู้ช่วยอัจฉริยะภาครัฐ',
-    description: 'ตอบคำถามและแนะนำบริการที่เหมาะสมผ่านระบบสนทนาด้วยภาษาไทย'
+    title: 'บริการสอบถามเพิ่มเติม',
+    description: 'หากต้องการข้อมูลเฉพาะเรื่องหรือคำปรึกษา สามารถกรอกแบบฟอร์มหรือจองเวลานัดหมายผ่านหน้าติดต่อเรา',
+    href: '/contact'
   }
 ];
 
@@ -125,188 +84,230 @@ function formatThaiDate(value) {
 }
 
 export default async function HomePage() {
-  const announcements = (await getAnnouncements()).slice(0, 3);
+  const [newsItems, announcementItems] = await Promise.all([getNews(), getAnnouncements()]);
+
+  const topNews = newsItems.slice(0, 4);
+  const featuredNews = topNews[0];
+  const secondaryNews = topNews.slice(1);
+  const latestAnnouncements = announcementItems.slice(0, 3);
 
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-blue-100">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(77,166,255,0.25),_transparent_55%)]" />
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 py-20 md:flex-row md:items-center">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#e9f5ee] via-white to-[#cfe7d7]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(104,194,139,0.22),_transparent_55%)]" />
+          <div className="relative mx-auto flex max-w-6xl flex-col gap-12 px-6 py-20 lg:flex-row lg:items-center">
             <div className="flex-1 space-y-6">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 text-sm font-medium text-primary shadow-sm">
                 <span className="h-2 w-2 rounded-full bg-primary" />
-                ระบบบริการดิจิทัลภาครัฐ
+                ศูนย์ประชาสัมพันธ์กระทรวงสาธารณสุข
               </span>
               <h1 className="text-3xl font-semibold text-neutral md:text-5xl">
-                พร้อมดูแลทุกเรื่องราชการ ในช่องทางที่ประชาชนเข้าถึงได้ง่ายที่สุด
+                อัปเดตข่าวสาร สุขภาพ และภารกิจสำคัญจากทุกหน่วยงานในสังกัด
               </h1>
-              <p className="max-w-xl text-lg text-slate-600">
-                รวมข้อมูลและบริการจากทุกหน่วยงานภาครัฐไว้ในที่เดียว ตั้งแต่การขอเอกสาร จองคิว ไปจนถึงรับสิทธิประโยชน์ต่าง ๆ บริการด้วยมาตรฐานเดียวกันทั่วประเทศ
+              <p className="max-w-2xl text-lg text-slate-600">
+                ติดตามประกาศทางการ กิจกรรมประชาสัมพันธ์ และข้อมูลหน่วยงานสาธารณสุขได้ในหน้าเดียว
+                พร้อมลิงก์ไปยังศูนย์ข้อมูลเชิงลึกสำหรับผู้ที่ต้องการศึกษารายละเอียดเพิ่มเติม
               </p>
+              <ul className="grid gap-4 sm:grid-cols-2">
+                <li className="rounded-3xl border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
+                  <span className="font-semibold text-primary">•</span> ข่าวด่วนและประกาศสำคัญจากทุกกรมกอง
+                </li>
+                <li className="rounded-3xl border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
+                  <span className="font-semibold text-primary">•</span> กิจกรรมส่งเสริมสุขภาพและการให้บริการในพื้นที่
+                </li>
+                <li className="rounded-3xl border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
+                  <span className="font-semibold text-primary">•</span> ภาพรวมโครงสร้างและบทบาทของหน่วยงานหลัก
+                </li>
+                <li className="rounded-3xl border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
+                  <span className="font-semibold text-primary">•</span> ช่องทางติดต่อและรับฟังความคิดเห็นจากประชาชน
+                </li>
+              </ul>
               <div className="flex flex-wrap gap-4">
-                <a href="#digital" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral">
-                  เริ่มต้นใช้งานบริการดิจิทัล
-                </a>
-                <a href="#services" className="rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10">
-                  สำรวจบริการทั้งหมด
-                </a>
-              </div>
-              <div className="grid gap-4 pt-8 sm:grid-cols-3">
-                {stats.map((item) => (
-                  <StatCard key={item.label} value={item.value} label={item.label} />
-                ))}
-              </div>
-            </div>
-            <div className="flex-1">
-              <div className="section-wrapper space-y-5 p-8">
-                <h2 className="text-lg font-semibold text-neutral">บริการด่วนยอดนิยม</h2>
-                <ul className="space-y-3 text-sm text-slate-600">
-                  <li className="flex items-center justify-between rounded-2xl bg-sky-50/60 px-4 py-3">
-                    <span>ตรวจสอบสิทธิ "เราชนะ" รอบล่าสุด</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                    <span>ติดตามสถานะคำขอหนังสือรับรอง</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                    <span>ยื่นภาษีบุคคลธรรมดาออนไลน์</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between rounded-2xl bg-white px-4 py-3 shadow-sm">
-                    <span>ตรวจสอบสิทธิประกันสังคม</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                </ul>
+                <Link
+                  href="/news"
+                  className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
+                >
+                  อ่านข่าวทั้งหมด
+                </Link>
+                <Link
+                  href="/structure"
+                  className="rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+                >
+                  ดูข้อมูลหน่วยงาน
+                </Link>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section id="services" className="mx-auto max-w-6xl px-6 py-20">
-          <SectionTitle title="บริการยอดนิยม" subtitle="เชื่อมต่อบริการที่จำเป็นสำหรับทุกช่วงชีวิตให้พร้อมใช้งานในไม่กี่ขั้นตอน" />
-          <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-            {services.map((service) => (
-              <ServiceCard key={service.title} {...service} />
-            ))}
-          </div>
-        </section>
-
-        <section id="news" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper p-10">
-            <SectionTitle title="ข่าวประกาศล่าสุด" subtitle="ติดตามนโยบายและประกาศสำคัญจากภาครัฐ" />
-            <div className="mt-10 grid gap-8 md:grid-cols-3">
-              {announcements.map((announcement) => (
-                <article key={announcement.slug} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
-                    {formatThaiDate(announcement.date)}
+            <div className="flex-1 space-y-6">
+              <div className="section-wrapper space-y-4 p-8">
+                <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">ข่าวเด่นประจำวัน</p>
+                {featuredNews ? (
+                  <>
+                    <p className="text-sm font-semibold text-neutral">{formatThaiDate(featuredNews.date)}</p>
+                    <h2 className="text-xl font-semibold text-neutral">{featuredNews.title}</h2>
+                    <p className="text-sm leading-6 text-slate-600">{featuredNews.summary}</p>
+                    <Link
+                      href={`/news/${featuredNews.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                    >
+                      อ่านรายละเอียด <span aria-hidden="true">→</span>
+                    </Link>
+                  </>
+                ) : (
+                  <p className="text-sm text-slate-600">
+                    ขณะนี้ยังไม่มีข่าวเด่น โปรดกลับมาตรวจสอบอีกครั้งในภายหลัง
                   </p>
-                  <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
-                  <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                    อ่านเพิ่มเติม <span aria-hidden="true">→</span>
-                  </Link>
-                </article>
+                )}
+              </div>
+              {secondaryNews.length > 0 && (
+                <div className="rounded-3xl border border-[#dcece2] bg-white/80 p-6 shadow-sm">
+                  <h3 className="text-sm font-semibold text-neutral">อัปเดตอื่น ๆ</h3>
+                  <ul className="mt-4 space-y-3 text-sm text-slate-600">
+                    {secondaryNews.map((newsItem) => (
+                      <li key={newsItem.slug} className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-xs text-primary/70">{formatThaiDate(newsItem.date)}</p>
+                          <p className="font-medium text-neutral">{newsItem.title}</p>
+                        </div>
+                        <Link
+                          href={`/news/${newsItem.slug}`}
+                          className="shrink-0 text-sm font-semibold text-primary"
+                        >
+                          อ่านต่อ
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <div className="section-wrapper overflow-hidden bg-white/85 p-10 shadow-sm">
+            <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
+              <div className="flex-1 space-y-4">
+                <SectionTitle
+                  title="ข่าวและประกาศล่าสุด"
+                  subtitle="สรุปสาระสำคัญจากทุกกรมในสังกัด พร้อมลิงก์ไปยังประกาศฉบับเต็ม"
+                />
+                <p className="text-sm text-slate-600">
+                  อัปเดตนี้คัดเลือกข่าวที่ประชาชนควรทราบ เช่น นโยบายใหม่ มาตรการเร่งด่วน และคำเตือนด้านสุขภาพที่เกิดขึ้นในช่วงเวลานี้
+                  สามารถดูประกาศย้อนหลังและตัวกรองหัวข้อได้ในหน้าศูนย์ข่าวเต็มรูปแบบ
+                </p>
+                <Link href="/news" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                  ไปยังศูนย์ข่าวทั้งหมด <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+              <div className="flex-1 space-y-6">
+                {latestAnnouncements.length > 0 ? (
+                  latestAnnouncements.map((announcement) => (
+                    <article
+                      key={announcement.slug}
+                      className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:border-primary/60"
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{formatThaiDate(announcement.date)}</p>
+                      <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
+                      <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>
+                      <Link href={`/announcements/${announcement.slug}`} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                        อ่านประกาศฉบับเต็ม <span aria-hidden="true">→</span>
+                      </Link>
+                    </article>
+                  ))
+                ) : (
+                  <div className="rounded-3xl border border-dashed border-[#dcece2] bg-white/70 p-6 text-sm text-slate-500">
+                    ขณะนี้ยังไม่มีประกาศเผยแพร่ใหม่ ระบบจะแสดงรายการทันทีที่มีการอัปเดตเพิ่มเติม
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-[#f4faf6] py-20">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
+              <div className="space-y-6">
+                <SectionTitle
+                  title="กิจกรรมและสื่อประชาสัมพันธ์"
+                  subtitle="กระจายความรู้และบริการเชิงรุกไปยังพื้นที่ต่าง ๆ ทั่วประเทศ"
+                />
+                <p className="text-sm leading-6 text-slate-600">
+                  เลือกติดตามกิจกรรมจากแต่ละศูนย์ เพื่อร่วมเข้ารับบริการ เช็กกำหนดการลงพื้นที่ หรือแชร์ข้อมูลให้กับชุมชนของท่านได้สะดวก
+                </p>
+              </div>
+              <div className="rounded-3xl border border-[#c7e2d1] bg-[#eef7f1] p-6 text-sm text-slate-600">
+                ศูนย์ปฏิบัติการประชาสัมพันธ์กลางประสานข้อมูลกับสำนักงานสาธารณสุขจังหวัดเพื่อให้ข่าวและกิจกรรมมีความถูกต้องทันเวลา
+                หากต้องการจัดกิจกรรมร่วม โปรดติดต่อผ่านศูนย์บริการประชาชนหรือแบบฟอร์มออนไลน์
+              </div>
+            </div>
+            <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {campaignHighlights.map((item) => (
+                <div key={item.title} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{item.period}</p>
+                  <h3 className="mt-2 text-lg font-semibold text-neutral">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
+                  <p className="mt-4 text-sm font-medium text-primary">พื้นที่ดำเนินการ: {item.location}</p>
+                </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="digital" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper grid gap-12 p-10 lg:grid-cols-[1.3fr_1fr]">
-            <div className="space-y-6">
-              <SectionTitle
-                title="ศูนย์บริการดิจิทัล ThaiGov Connect"
-                subtitle="เข้าสู่ระบบเดียว ใช้บริการได้ทุกหน่วยงาน พร้อมผู้ช่วยอัจฉริยะดูแลคุณตลอด 24 ชั่วโมง"
-              />
-              <div className="grid gap-6 md:grid-cols-2">
-                {digitalServices.map((service) => (
-                  <div key={service.title} className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                    <h3 className="text-base font-semibold text-neutral">{service.title}</h3>
-                    <p className="mt-3 text-sm text-slate-600">{service.description}</p>
-                  </div>
-                ))}
+        <section className="mx-auto max-w-6xl px-6 py-20">
+          <SectionTitle
+            title="ภาพรวมหน่วยงานในสังกัด"
+            subtitle="รู้จักบทบาทหลักของกรมและสำนักต่าง ๆ เพื่อการประสานงานที่ถูกต้อง"
+          />
+          <div className="mt-12 grid gap-6 md:grid-cols-2">
+            {agencyOverview.map((agency) => (
+              <div key={agency.name} className="rounded-3xl border border-[#dcece2] bg-white/85 p-6 shadow-sm">
+                <h3 className="text-lg font-semibold text-neutral">{agency.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{agency.summary}</p>
+                <p className="mt-4 text-sm font-semibold text-primary">หัวข้อเน้น: {agency.focus}</p>
               </div>
-              {/* <div className="rounded-3xl bg-gradient-to-br from-primary to-accent p-8 text-white">
-                <h3 className="text-lg font-semibold">ลงทะเบียนใช้งานภายในไม่กี่นาที</h3>
-                <p className="mt-3 text-sm text-sky-50">เข้าสู่ระบบด้วยบัตรประชาชนหรือบัญชีภาครัฐเดิมที่มีอยู่</p>
-                <div className="mt-6 flex flex-wrap gap-4">
-                  <a href="#" className="rounded-full bg-white/90 px-6 py-3 text-sm font-semibold text-primary transition hover:bg-white">
-                    ลงทะเบียนบัญชีใหม่
-                  </a>
-                  <a href="#" className="rounded-full border border-white px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
-                    คู่มือการใช้งาน
-                  </a>
-                </div>
-              </div> */}
-            </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
-                <h3 className="text-base font-semibold text-neutral">ช่องทางด่วน</h3>
-                <ul className="mt-5 space-y-4 text-sm text-slate-600">
-                  <li className="flex items-center justify-between">
-                    <span>ลงชื่อเข้าใช้ด้วยบัตรประชาชน</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ยืนยันตัวตนผ่านแอป ThaID</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ติดตามสถานะคำร้อง</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span>ขอรับการแจ้งเตือนเพิ่มเติม</span>
-                    <span className="text-primary">→</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="rounded-3xl border border-sky-200 bg-sky-50/80 p-8 text-neutral">
-                <h3 className="text-base font-semibold text-neutral">มาตรฐานความปลอดภัย</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
-                  ระบบรักษาความปลอดภัยระดับสากล รองรับการยืนยันตัวตนหลายปัจจัยและการเข้ารหัสข้อมูลทุกขั้นตอน เพื่อปกป้องข้อมูลส่วนบุคคลของประชาชน
-                </p>
-              </div>
-            </div>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link
+              href="/structure"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
+            >
+              สำรวจโครงสร้างบุคลากรแบบเต็ม <span aria-hidden="true">→</span>
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition hover:bg-primary/10"
+            >
+              ติดต่อหน่วยงานเฉพาะด้าน <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </section>
 
-        <section id="contact" className="mx-auto max-w-6xl px-6 pb-20">
-          <div className="section-wrapper grid gap-12 p-10 lg:grid-cols-2">
-            <div className="space-y-6">
-              <SectionTitle title="ติดต่อศูนย์บริการภาครัฐ" subtitle="พร้อมดูแลประชาชนทุกช่องทาง" />
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">สายด่วนภาครัฐ 1111</p>
-                  <p className="mt-2 text-sm text-slate-600">24 ชั่วโมง</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">ศูนย์บริการประชาชน</p>
-                  <p className="mt-2 text-sm text-slate-600">อาคารราชการไทย ถนนประชาธิปไตย เขตดุสิต กรุงเทพฯ</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">บริการสนทนาออนไลน์</p>
-                  <p className="mt-2 text-sm text-slate-600">จันทร์-ศุกร์ 08:30 - 20:00 น.</p>
-                </div>
-                <div className="rounded-3xl border border-slate-100 bg-white/80 p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-neutral">ศูนย์ข้อมูลเปิด</p>
-                  <p className="mt-2 text-sm text-slate-600">ดาวน์โหลดชุดข้อมูลภาครัฐพร้อมใช้งาน</p>
-                </div>
-              </div>
-            </div>
-            <div className="space-y-6">
-              <div className="rounded-3xl border border-slate-100 bg-white/90 p-8 shadow-sm">
-                <h3 className="text-base font-semibold text-neutral">แบบฟอร์มติดต่อออนไลน์</h3>
-                <ContactForm />
-              </div>
-              <div className="rounded-3xl border border-sky-200 bg-sky-50/80 p-8 text-sm text-slate-600">
-                <p>
-                  *ข้อมูลทุกอย่างจะถูกจัดเก็บตามมาตรฐาน PDPA และใช้เพื่อการให้บริการตามที่ระบุเท่านั้น สามารถตรวจสอบนโยบายความเป็นส่วนตัวได้ที่ศูนย์ข้อมูลเปิด
-                </p>
-              </div>
+        <section className="bg-[#f4faf6] py-20">
+          <div className="mx-auto max-w-6xl px-6">
+            <SectionTitle
+              title="ช่องทางติดตามและรับข้อมูล"
+              subtitle="เลือกวิธีรับข่าวสารที่สะดวก ไม่ว่าจะเป็นออนไลน์หรือศูนย์บริการใกล้บ้าน"
+            />
+            <div className="mt-12 grid gap-6 md:grid-cols-3">
+              {mediaChannels.map((channel) => (
+                <Link
+                  key={channel.href}
+                  href={channel.href}
+                  className="group flex h-full flex-col justify-between rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:-translate-y-1 hover:border-primary/60 hover:shadow-lg"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold text-neutral group-hover:text-primary">{channel.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{channel.description}</p>
+                  </div>
+                  <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                    ดูรายละเอียด <span aria-hidden="true">→</span>
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </section>

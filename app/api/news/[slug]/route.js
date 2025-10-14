@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { deleteAnnouncement, updateAnnouncement } from '@/lib/announcements';
+import { deleteNews, updateNews } from '@/lib/news';
 import { verifySessionToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
@@ -41,7 +41,7 @@ export async function PATCH(request, { params }) {
   }
 
   try {
-    const updated = await updateAnnouncement(params.slug, payload);
+    const updated = await updateNews(params.slug, payload);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
@@ -55,7 +55,7 @@ export async function DELETE(request, { params }) {
   }
 
   try {
-    await deleteAnnouncement(params.slug);
+    await deleteNews(params.slug);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
