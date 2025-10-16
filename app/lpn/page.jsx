@@ -71,6 +71,27 @@ function formatDatetimeLocal(value) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function formatDateInput(value) {
+  if (!value) {
+    return '';
+  }
+
+  try {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+
+    const year = date.getFullYear();
+    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const day = `${date.getDate()}`.padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  } catch (error) {
+    return '';
+  }
+}
+
 function getVisibilityState(item) {
   const now = Date.now();
   const startsAt = item.displayFrom ? new Date(item.displayFrom).getTime() : null;
@@ -133,6 +154,7 @@ export default function AdminPage() {
   const [formData, setFormData] = useState({ news: createDefaultForm(), announcements: createDefaultForm() });
   const [scheduleDrafts, setScheduleDrafts] = useState({ news: {}, announcements: {} });
   const [processingKey, setProcessingKey] = useState(null);
+  const [editingSlugs, setEditingSlugs] = useState({ news: null, announcements: null });
 
   const fetchContent = async (type) => {
     const endpoint = typeEndpoints[type];
@@ -207,28 +229,67 @@ export default function AdminPage() {
     const endpoint = typeEndpoints[type];
     const label = typeLabels[type];
     const currentForm = formData[type];
+    const editingSlug = editingSlugs[type];
+    const isEditing = Boolean(editingSlug);
+    const formKey = `form:${type}`;
+    setProcessingKey(formKey);
 
     const payload = {
-      ...currentForm,
+      title: currentForm.title?.trim() ?? '',
+      summary: currentForm.summary?.trim() ?? '',
+      content: currentForm.content?.trim() ?? '',
       date: currentForm.date || null,
       displayFrom: currentForm.displayFrom || null,
       displayUntil: currentForm.displayUntil || null
     };
 
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
+    try {
+      const response = await fetch(isEditing ? `${endpoint}/${editingSlug}` : endpoint, {
+        method: isEditing ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
 
-    if (response.ok) {
-      setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
-      setFeedback({ type: 'success', message: `บันทึก${label}ใหม่เรียบร้อยแล้ว` });
-      await fetchContent(type);
-    } else {
-      const data = await response.json();
-      setFeedback({ type: 'error', message: data.message ?? `ไม่สามารถบันทึก${label}ได้` });
+      if (response.ok) {
+        setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
+        setEditingSlugs((previous) => ({ ...previous, [type]: null }));
+        setFeedback({
+          type: 'success',
+          message: isEditing ? `อัปเดต${label}เรียบร้อยแล้ว` : `บันทึก${label}ใหม่เรียบร้อยแล้ว`
+        });
+        await fetchContent(type);
+      } else {
+        const data = await response.json();
+        setFeedback({ type: 'error', message: data.message ?? `ไม่สามารถบันทึก${label}ได้` });
+      }
+    } catch (error) {
+      setFeedback({ type: 'error', message: `ไม่สามารถบันทึก${label}ได้` });
+    } finally {
+      setProcessingKey(null);
     }
+  };
+
+  const handleEditStart = (type, item) => {
+    setActiveTab(type);
+    setFormData((previous) => ({
+      ...previous,
+      [type]: {
+        title: item.title || '',
+        summary: item.summary || '',
+        content: item.content || '',
+        date: formatDateInput(item.date),
+        displayFrom: formatDatetimeLocal(item.displayFrom),
+        displayUntil: formatDatetimeLocal(item.displayUntil)
+      }
+    }));
+    setEditingSlugs((previous) => ({ ...previous, [type]: item.slug }));
+    setFeedback({ type: 'info', message: `กำลังแก้ไข${typeLabels[type]} “${item.title}”` });
+  };
+
+  const handleEditCancel = (type) => {
+    setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
+    setEditingSlugs((previous) => ({ ...previous, [type]: null }));
+    setFeedback({ type: 'info', message: `ยกเลิกการแก้ไข${typeLabels[type]}` });
   };
 
   const handleToggleVisibility = async (type, slug, published) => {
@@ -272,6 +333,10 @@ export default function AdminPage() {
 
     if (response.ok) {
       setFeedback({ type: 'success', message: `ลบ${label}เรียบร้อยแล้ว` });
+      if (editingSlugs[type] === slug) {
+        setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
+        setEditingSlugs((previous) => ({ ...previous, [type]: null }));
+      }
       await fetchContent(type);
     } else {
       const data = await response.json();
@@ -328,6 +393,9 @@ export default function AdminPage() {
   const currentForm = formData[activeTab];
   const currentDrafts = scheduleDrafts[activeTab] ?? {};
   const activeLabel = typeLabels[activeTab];
+  const currentEditingSlug = editingSlugs[activeTab];
+  const currentEditingItem = activeItems.find((item) => item.slug === currentEditingSlug) ?? null;
+  const formProcessing = processingKey === `form:${activeTab}`;
 
   return (
     <div className="min-h-screen bg-[#e6efe9] py-16">
@@ -340,7 +408,9 @@ export default function AdminPage() {
             className={`mt-6 rounded-2xl border px-4 py-3 text-sm ${
               feedback.type === 'success'
                 ? 'border-[#c7e2d1] bg-[#eef7f1] text-primary'
-                : 'border-rose-200 bg-rose-50 text-rose-700'
+                : feedback.type === 'error'
+                  ? 'border-rose-200 bg-rose-50 text-rose-700'
+                  : 'border-sky-200 bg-sky-50 text-sky-700'
             }`}
           >
             {feedback.message}
@@ -463,9 +533,17 @@ export default function AdminPage() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <button
                                   type="button"
+                                  onClick={() => handleEditStart(activeTab, item)}
+                                  className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
+                                  disabled={processing || formProcessing}
+                                >
+                                  แก้ไข{activeLabel}
+                                </button>
+                                <button
+                                  type="button"
                                   onClick={() => handleToggleVisibility(activeTab, item.slug, !item.published)}
                                   className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
-                                  disabled={processing}
+                                  disabled={processing || formProcessing}
                                 >
                                   {item.published ? 'ปิดการแสดง' : 'เปิดการแสดง'}
                                 </button>
@@ -473,7 +551,7 @@ export default function AdminPage() {
                                   type="button"
                                   onClick={() => handleDelete(activeTab, item.slug, item.title)}
                                   className="rounded-full border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:border-rose-300 hover:bg-rose-50"
-                                  disabled={processing}
+                                  disabled={processing || formProcessing}
                                 >
                                   ลบ{activeLabel}
                                 </button>
@@ -500,7 +578,7 @@ export default function AdminPage() {
                                       value={currentDrafts[item.slug]?.displayFrom ?? ''}
                                       onChange={(event) => handleScheduleChange(activeTab, item.slug, 'displayFrom', event.target.value)}
                                       className="w-56 rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                                      disabled={processing}
+                                      disabled={processing || formProcessing}
                                     />
                                   </label>
                                   <label className="flex flex-col gap-1 text-[11px] font-semibold uppercase tracking-wide text-slate-500">
@@ -510,16 +588,16 @@ export default function AdminPage() {
                                       value={currentDrafts[item.slug]?.displayUntil ?? ''}
                                       onChange={(event) => handleScheduleChange(activeTab, item.slug, 'displayUntil', event.target.value)}
                                       className="w-56 rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                                      disabled={processing}
+                                      disabled={processing || formProcessing}
                                     />
                                   </label>
-                                  <button
-                                    type="submit"
-                                    className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-neutral disabled:opacity-60"
-                                    disabled={processing}
-                                  >
-                                    บันทึกตาราง
-                                  </button>
+                                    <button
+                                      type="submit"
+                                      className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-neutral disabled:opacity-60"
+                                      disabled={processing || formProcessing}
+                                    >
+                                      บันทึกตาราง
+                                    </button>
                                 </form>
                               </div>
                             </td>
@@ -539,7 +617,26 @@ export default function AdminPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <h2 className="text-lg font-semibold text-neutral">เพิ่ม{activeLabel}ใหม่</h2>
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <h2 className="text-lg font-semibold text-neutral">
+                  {currentEditingSlug ? `แก้ไข${activeLabel}` : `เพิ่ม${activeLabel}ใหม่`}
+                </h2>
+                {currentEditingSlug && (
+                  <button
+                    type="button"
+                    onClick={() => handleEditCancel(activeTab)}
+                    className="inline-flex items-center justify-center rounded-full border border-primary/40 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary/10"
+                    disabled={formProcessing}
+                  >
+                    ยกเลิกการแก้ไข
+                  </button>
+                )}
+              </div>
+              {currentEditingItem && (
+                <p className="text-xs font-semibold text-primary">
+                  กำลังแก้ไข{activeLabel} “{currentEditingItem.title}”
+                </p>
+              )}
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="title">
                   หัวข้อ{activeLabel}
@@ -647,9 +744,10 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral"
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral disabled:opacity-60"
+                disabled={formProcessing}
               >
-                บันทึก{activeLabel}
+                {currentEditingSlug ? 'บันทึกการแก้ไข' : `บันทึก${activeLabel}`}
               </button>
             </form>
           </div>

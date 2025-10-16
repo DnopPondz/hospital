@@ -102,6 +102,8 @@ export default function AdminDashboard() {
 
   const [newsForm, setNewsForm] = useState(emptyForm);
   const [announcementForm, setAnnouncementForm] = useState(emptyForm);
+  const [newsEditingSlug, setNewsEditingSlug] = useState(null);
+  const [announcementEditingSlug, setAnnouncementEditingSlug] = useState(null);
 
   const [newsMessage, setNewsMessage] = useState('');
   const [newsError, setNewsError] = useState('');
@@ -203,9 +205,11 @@ export default function AdminDashboard() {
   const resetForms = () => {
     setNewsForm(emptyForm);
     setAnnouncementForm(emptyForm);
+    setNewsEditingSlug(null);
+    setAnnouncementEditingSlug(null);
   };
 
-  const handleCreate = async (event, type) => {
+  const handleSubmit = async (event, type) => {
     event.preventDefault();
 
     const isNews = type === 'news';
@@ -215,8 +219,11 @@ export default function AdminDashboard() {
     const setEdits = isNews ? setNewsEdits : setAnnouncementEdits;
     const setMessage = isNews ? setNewsMessage : setAnnouncementMessage;
     const setError = isNews ? setNewsError : setAnnouncementError;
+    const editingSlug = isNews ? newsEditingSlug : announcementEditingSlug;
     const endpoint = isNews ? '/api/news' : '/api/announcements';
-    const key = `${type}-create`;
+    const isEditing = Boolean(editingSlug);
+    const url = isEditing ? `${endpoint}/${editingSlug}` : endpoint;
+    const key = `${type}-${isEditing ? `update-${editingSlug}` : 'create'}`;
 
     setMessage('');
     setError('');
@@ -233,8 +240,8 @@ export default function AdminDashboard() {
         imageUrl: formState.imageUrl || null
       };
 
-      const response = await fetch(endpoint, {
-        method: 'POST',
+      const response = await fetch(url, {
+        method: isEditing ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
@@ -245,7 +252,9 @@ export default function AdminDashboard() {
         throw new Error(data?.message || 'ไม่สามารถบันทึกข้อมูลได้');
       }
 
-      setItems((prev) => [data, ...prev]);
+      setItems((prev) =>
+        isEditing ? prev.map((item) => (item.slug === editingSlug ? data : item)) : [data, ...prev]
+      );
       setEdits((prev) => ({
         ...prev,
         [data.slug]: {
@@ -254,7 +263,12 @@ export default function AdminDashboard() {
         }
       }));
       setFormState(emptyForm);
-      setMessage('บันทึกข้อมูลเรียบร้อยแล้ว');
+      if (isNews) {
+        setNewsEditingSlug(null);
+      } else {
+        setAnnouncementEditingSlug(null);
+      }
+      setMessage(isEditing ? 'อัปเดตข้อมูลเรียบร้อยแล้ว' : 'บันทึกข้อมูลเรียบร้อยแล้ว');
     } catch (error) {
       setError(error.message);
     } finally {
@@ -393,6 +407,10 @@ export default function AdminDashboard() {
         });
         setNewsError('');
         setNewsMessage('ลบรายการเรียบร้อยแล้ว');
+        if (newsEditingSlug === slug) {
+          setNewsEditingSlug(null);
+          setNewsForm(emptyForm);
+        }
       } else {
         setAnnouncementItems((prev) => prev.filter((item) => item.slug !== slug));
         setAnnouncementEdits((prev) => {
@@ -401,6 +419,10 @@ export default function AdminDashboard() {
         });
         setAnnouncementError('');
         setAnnouncementMessage('ลบรายการเรียบร้อยแล้ว');
+        if (announcementEditingSlug === slug) {
+          setAnnouncementEditingSlug(null);
+          setAnnouncementForm(emptyForm);
+        }
       }
     } catch (error) {
       if (type === 'news') {
@@ -445,10 +467,16 @@ export default function AdminDashboard() {
         setNewsItems((prev) => prev.map((item) => (item.slug === slug ? data : item)));
         setNewsError('');
         setNewsMessage('อัปเดตรูปภาพเรียบร้อยแล้ว');
+        if (newsEditingSlug === slug) {
+          setNewsForm((prev) => ({ ...prev, imageUrl: data.imageUrl || '' }));
+        }
       } else {
         setAnnouncementItems((prev) => prev.map((item) => (item.slug === slug ? data : item)));
         setAnnouncementError('');
         setAnnouncementMessage('อัปเดตรูปภาพเรียบร้อยแล้ว');
+        if (announcementEditingSlug === slug) {
+          setAnnouncementForm((prev) => ({ ...prev, imageUrl: data.imageUrl || '' }));
+        }
       }
     } catch (error) {
       if (type === 'news') {
@@ -488,6 +516,46 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleEditStart = (item, type) => {
+    const formData = {
+      title: item.title || '',
+      summary: item.summary || '',
+      content: item.content || '',
+      date: toInputValue(item.date),
+      displayFrom: toInputValue(item.displayFrom),
+      displayUntil: toInputValue(item.displayUntil),
+      imageUrl: item.imageUrl || ''
+    };
+
+    if (type === 'news') {
+      setActiveTab('news');
+      setNewsForm(formData);
+      setNewsEditingSlug(item.slug);
+      setNewsMessage('');
+      setNewsError('');
+    } else {
+      setActiveTab('announcements');
+      setAnnouncementForm(formData);
+      setAnnouncementEditingSlug(item.slug);
+      setAnnouncementMessage('');
+      setAnnouncementError('');
+    }
+  };
+
+  const handleEditCancel = (type) => {
+    if (type === 'news') {
+      setNewsForm(emptyForm);
+      setNewsEditingSlug(null);
+      setNewsMessage('');
+      setNewsError('');
+    } else {
+      setAnnouncementForm(emptyForm);
+      setAnnouncementEditingSlug(null);
+      setAnnouncementMessage('');
+      setAnnouncementError('');
+    }
+  };
+
   const renderItems = (items, edits, type, setEdits) => (
     <div className="mt-10 space-y-6">
       {items.map((item) => (
@@ -511,6 +579,13 @@ export default function AdminDashboard() {
               )}
             </div>
             <div className="flex w-full max-w-xs flex-col gap-4">
+              <button
+                type="button"
+                className="rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
+                onClick={() => handleEditStart(item, type)}
+              >
+                แก้ไขข้อมูล
+              </button>
               <button
                 type="button"
                 className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400"
@@ -596,6 +671,13 @@ export default function AdminDashboard() {
 
   const newsEditsMemo = useMemo(() => newsEdits, [newsEdits]);
   const announcementEditsMemo = useMemo(() => announcementEdits, [announcementEdits]);
+  const activeEditingSlug = activeTab === 'news' ? newsEditingSlug : announcementEditingSlug;
+  const activeTypeLabel = activeTab === 'news' ? 'ข่าวประชาสัมพันธ์' : 'ประกาศ';
+  const activeItemsList = activeTab === 'news' ? newsItems : announcementItems;
+  const activeEditingItem = activeItemsList.find((item) => item.slug === activeEditingSlug);
+  const activeSubmitKey = activeEditingSlug
+    ? `${activeTab === 'news' ? 'news' : 'announcements'}-update-${activeEditingSlug}`
+    : `${activeTab === 'news' ? 'news' : 'announcements'}-create`;
 
   if (checkingSession) {
     return (
@@ -701,24 +783,41 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
             <div className="flex-1 space-y-2">
               <h2 className="text-lg font-semibold text-neutral">
-                {activeTab === 'news' ? 'เพิ่มข่าวประชาสัมพันธ์' : 'เพิ่มประกาศใหม่'}
+                {activeEditingSlug ? `แก้ไข${activeTypeLabel}` : `เพิ่ม${activeTypeLabel}`}
               </h2>
               <p className="text-sm text-slate-500">
                 กรอกข้อมูลให้ครบถ้วน สามารถอัปโหลดรูปภาพและกำหนดช่วงการเผยแพร่ได้ตามต้องการ
               </p>
+              {activeEditingItem && (
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-xs font-semibold text-primary">
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+                  {`กำลังแก้ไข${activeTypeLabel} “${activeEditingItem.title}”`}
+                </span>
+              )}
             </div>
-            <button
-              type="button"
-              onClick={resetForms}
-              className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"
-            >
-              ล้างฟอร์ม
-            </button>
+            <div className="flex items-center gap-3">
+              {activeEditingItem && (
+                <button
+                  type="button"
+                  onClick={() => handleEditCancel(activeTab === 'news' ? 'news' : 'announcements')}
+                  className="rounded-full border border-primary/40 bg-primary/5 px-4 py-2 text-xs font-semibold text-primary transition hover:bg-primary/10"
+                >
+                  ยกเลิกการแก้ไข
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={resetForms}
+                className="rounded-full border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100"
+              >
+                ล้างฟอร์ม
+              </button>
+            </div>
           </div>
 
           <form
             className="mt-8 grid gap-6 md:grid-cols-2"
-            onSubmit={(event) => handleCreate(event, activeTab === 'news' ? 'news' : 'announcements')}
+            onSubmit={(event) => handleSubmit(event, activeTab === 'news' ? 'news' : 'announcements')}
           >
             <label className="flex flex-col gap-2 text-sm font-semibold text-slate-600">
               หัวข้อ
@@ -844,9 +943,9 @@ export default function AdminDashboard() {
               <button
                 type="submit"
                 className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-slate-400"
-                disabled={isLoading(`${activeTab === 'news' ? 'news' : 'announcements'}-create`)}
+                disabled={isLoading(activeSubmitKey)}
               >
-                บันทึกข้อมูล
+                {activeEditingSlug ? 'บันทึกการแก้ไข' : 'บันทึกข้อมูล'}
               </button>
             </div>
           </form>

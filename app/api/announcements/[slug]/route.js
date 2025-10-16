@@ -24,6 +24,22 @@ export async function PATCH(request, { params }) {
   const body = await request.json();
   const payload = {};
 
+  if (Object.prototype.hasOwnProperty.call(body, 'title')) {
+    payload.title = body.title;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'summary')) {
+    payload.summary = body.summary;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'content')) {
+    payload.content = body.content;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'date')) {
+    payload.date = body.date;
+  }
+
   if (Object.prototype.hasOwnProperty.call(body, 'published')) {
     payload.published = body.published;
   }
