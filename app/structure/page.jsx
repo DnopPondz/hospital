@@ -97,6 +97,54 @@ const supportUnits = [
   }
 ];
 
+function PersonnelNode({ person, level }) {
+  const sizeOptions = [
+    { container: 'h-32 w-32 border-4', sizes: '128px' },
+    { container: 'h-24 w-24 border-[3px]', sizes: '96px' },
+    { container: 'h-20 w-20 border-2', sizes: '80px' }
+  ];
+
+  const cardBase = 'section-wrapper relative flex w-full flex-col items-center gap-5 text-center md:text-left';
+  const cardByLevel = [
+    'max-w-xl px-8 py-10 md:flex md:items-start md:gap-6 md:text-left',
+    'max-w-sm px-6 py-8',
+    'max-w-xs px-5 py-6'
+  ];
+
+  const { container, sizes } = sizeOptions[level] ?? sizeOptions[2];
+  const description = person.description || person.summary;
+
+  return (
+    <div className={`${cardBase} ${cardByLevel[level] ?? cardByLevel[2]}`}>
+      <div className={`relative overflow-hidden rounded-full border-white bg-white/40 shadow-lg ${container}`}>
+        <Image
+          src={person.photo}
+          alt={person.name}
+          fill
+          sizes={sizes}
+          className="object-cover"
+        />
+      </div>
+      <div className="space-y-1 md:flex-1">
+        <p className="text-xs font-semibold uppercase tracking-wide text-primary/70">{person.position}</p>
+        <h3 className="text-lg font-semibold text-neutral md:text-xl">{person.name}</h3>
+        {description ? (
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{description}</p>
+        ) : null}
+        {person.focus && level === 0 ? (
+          <div className="mt-5 rounded-3xl border border-[#d7eadf] bg-[#f4fbf6] px-6 py-4 text-left text-sm leading-relaxed text-slate-600">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">บทบาทสำคัญ</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{person.focus}</p>
+          </div>
+        ) : null}
+        {person.focus && level > 0 && !description ? (
+          <p className="mt-3 text-sm leading-relaxed text-slate-600">{person.focus}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export const metadata = {
   title: 'โครงสร้างบุคลากร | สำนักงานราชการกลาง'
 };
@@ -111,101 +159,46 @@ export default function PersonnelStructurePage() {
           <div className="relative mx-auto max-w-6xl px-6">
             <SectionTitle
               title="โครงสร้างบุคลากร"
-              subtitle="ผังการบังคับบัญชาในรูปแบบรากต้นไม้ แสดงความเชื่อมโยงระหว่างผู้บริหารและหน่วยงานสนับสนุน"
+              subtitle="ผังบังคับบัญชาเชื่อมต่อกันด้วยเส้นสายแบบรากไม้ แสดงทีมบริหารหลักและหน่วยปฏิบัติการสำคัญ"
             />
 
-            <div className="mt-16 flex flex-col items-center gap-20">
-              <div className="flex flex-col items-center text-center">
-                <div className="section-wrapper relative w-full max-w-3xl space-y-6 px-8 py-12">
-                  <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">ศูนย์กลางการบริหาร</span>
-                  <div className="flex flex-col items-center gap-4 md:flex-row md:items-start md:gap-8">
-                    <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-white shadow-lg">
-                      <Image
-                        src={leadership.photo}
-                        alt={leadership.name}
-                        fill
-                        sizes="128px"
-                        className="object-cover"
-                      />
+            <div className="mt-16 flex justify-center">
+              <div className="org-tree w-full" style={{ '--tree-line': '#c5e0ce' }}>
+                <ul>
+                  <li>
+                    <div className="flex flex-col items-center">
+                      <PersonnelNode person={leadership} level={0} />
                     </div>
-                    <div className="space-y-3 text-left">
-                      <h3 className="text-2xl font-semibold text-neutral md:text-3xl">{leadership.name}</h3>
-                      <p className="text-base font-medium text-primary">{leadership.position}</p>
-                      <p className="text-sm leading-relaxed text-slate-600">{leadership.description}</p>
-                      <div className="rounded-3xl border border-[#dbece1] bg-[#f4fbf6] px-6 py-4 text-sm text-slate-600">
-                        <p className="font-semibold text-neutral">บทบาทสำคัญ</p>
-                        <p className="mt-2 leading-relaxed">{leadership.focus}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-10 flex items-center justify-center">
-                  <div className="h-16 w-px bg-gradient-to-b from-primary/40 via-primary/30 to-transparent" />
-                </div>
+                    <ul>
+                      {branches.map((branch) => (
+                        <li key={branch.position}>
+                          <PersonnelNode person={branch} level={1} />
+                          <ul>
+                            {branch.teams.map((team) => (
+                              <li key={team.position}>
+                                <PersonnelNode person={team} level={2} />
+                              </li>
+                            ))}
+                          </ul>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                </ul>
               </div>
+            </div>
 
-              <div className="relative w-full">
-                <div className="pointer-events-none absolute left-0 right-0 top-0 hidden h-px -translate-y-10 bg-gradient-to-r from-transparent via-primary/20 to-transparent md:block" />
-                <div className="grid gap-12 md:grid-cols-3">
-                  {branches.map((branch) => (
-                    <div key={branch.position} className="flex flex-col items-center gap-8 text-center md:text-left">
-                      <div className="section-wrapper relative w-full space-y-4 px-6 py-8">
-                        <div className="flex flex-col items-center gap-4 md:flex-row md:items-start md:gap-5">
-                          <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-white shadow-md">
-                            <Image
-                              src={branch.photo}
-                              alt={branch.name}
-                              fill
-                              sizes="96px"
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="space-y-2 text-left">
-                            <h4 className="text-xl font-semibold text-neutral">{branch.name}</h4>
-                            <p className="text-sm font-medium text-primary">{branch.position}</p>
-                          </div>
-                        </div>
-                        <p className="text-sm leading-relaxed text-slate-600">{branch.summary}</p>
-                      </div>
-                      <div className="flex w-full flex-col gap-6 border-l border-dashed border-primary/25 pl-6">
-                        {branch.teams.map((team) => (
-                          <div key={team.position} className="relative rounded-3xl border border-[#d7e9de] bg-white/80 px-5 py-5 shadow-sm">
-                            <span className="absolute -left-[37px] top-1/2 hidden h-px w-9 -translate-y-1/2 bg-primary/20 md:block" />
-                            <div className="flex items-start gap-4">
-                              <div className="relative h-16 w-16 overflow-hidden rounded-full border-2 border-white shadow-sm">
-                                <Image
-                                  src={team.photo}
-                                  alt={team.name}
-                                  fill
-                                  sizes="64px"
-                                  className="object-cover"
-                                />
-                              </div>
-                              <div className="space-y-1 text-left">
-                                <p className="text-sm font-semibold text-neutral">{team.name}</p>
-                                <p className="text-xs font-medium text-primary/80">{team.position}</p>
-                                <p className="mt-2 text-xs leading-relaxed text-slate-600">{team.focus}</p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="relative w-full max-w-5xl">
-                <div className="absolute inset-x-12 top-0 h-10 -translate-y-12 rounded-b-full border-x border-b border-primary/15 bg-gradient-to-b from-transparent via-[#e4f3ea] to-[#cbe5d3]" />
-                <div className="section-wrapper relative z-10 grid gap-6 px-8 py-10 md:grid-cols-3">
+            <div className="mt-24 flex flex-col items-center">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-primary/80">หน่วยสนับสนุนร่วมงาน</h4>
+              <div className="mt-8 w-full max-w-5xl">
+                <div className="section-wrapper grid gap-6 px-8 py-10 md:grid-cols-3">
                   {supportUnits.map((support) => (
                     <div key={support.title} className="flex flex-col gap-3 text-left">
-                      <h5 className="text-sm font-semibold uppercase tracking-wide text-neutral">{support.title}</h5>
+                      <h5 className="text-base font-semibold text-neutral">{support.title}</h5>
                       <p className="text-sm leading-relaxed text-slate-600">{support.description}</p>
                     </div>
                   ))}
                 </div>
-                <div className="absolute inset-x-1/3 bottom-[-48px] h-24 rounded-full bg-gradient-to-b from-[#c9e5d1] via-[#b8dbc4] to-transparent blur-xl" />
               </div>
             </div>
           </div>

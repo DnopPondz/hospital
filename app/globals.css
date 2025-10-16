@@ -22,3 +22,124 @@ a {
 .section-wrapper {
   @apply relative overflow-hidden rounded-[40px] border border-[#d8e7de] bg-white/75 shadow-sm;
 }
+
+.org-tree,
+.org-tree ul,
+.org-tree li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.org-tree ul {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 3rem;
+}
+
+.org-tree ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 3rem;
+  background: var(--tree-line, #cfded3);
+}
+
+.org-tree > ul {
+  display: flex;
+  padding-top: 0;
+}
+
+.org-tree > ul::before {
+  display: none;
+}
+
+.org-tree > ul > li {
+  padding-top: 0;
+}
+
+.org-tree > ul > li::before,
+.org-tree > ul > li::after {
+  display: none;
+}
+
+.org-tree li {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.25rem 0 1.25rem;
+  text-align: center;
+}
+
+.org-tree li::before,
+.org-tree li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 3rem;
+  border-top: 1px solid var(--tree-line, #cfded3);
+}
+
+.org-tree li::before {
+  left: 50%;
+  border-left: 1px solid var(--tree-line, #cfded3);
+}
+
+.org-tree li::after {
+  right: 50%;
+  border-right: 1px solid var(--tree-line, #cfded3);
+}
+
+.org-tree li:only-child::before,
+.org-tree li:only-child::after {
+  display: none;
+}
+
+.org-tree li:only-child {
+  padding-top: 0;
+}
+
+.org-tree li:first-child::before,
+.org-tree li:last-child::after {
+  border: none;
+}
+
+.org-tree li:first-child::after {
+  border-bottom-right-radius: 18px;
+}
+
+.org-tree li:last-child::before {
+  border-bottom-left-radius: 18px;
+}
+
+.org-tree ul ul::before {
+  background: var(--tree-line, #cfded3);
+}
+
+@media (max-width: 768px) {
+  .org-tree ul {
+    display: block;
+  }
+
+  .org-tree ul::before,
+  .org-tree li::before,
+  .org-tree li::after {
+    display: none;
+  }
+
+  .org-tree li {
+    display: block;
+    padding: 2.5rem 0 0 0;
+  }
+
+  .org-tree ul ul {
+    padding-top: 2.5rem;
+  }
+}
