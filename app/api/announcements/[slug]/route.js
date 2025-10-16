@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { deleteAnnouncement, updateAnnouncement } from '@/lib/announcements';
 import { verifySessionToken } from '@/lib/auth';
 import { deleteUploadedFile, saveUploadedImage } from '@/lib/uploads';
+import { coerceBooleanInput, normalizeOptionalDateInput } from '@/lib/inputs';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,78 @@ function requireAuth(request) {
   return null;
 }
 
+function hasOwn(body, key) {
+  return Object.prototype.hasOwnProperty.call(body, key);
+}
+
+async function readPatchPayload(request) {
+  const contentType = request.headers.get('content-type') || '';
+
+  if (contentType.includes('application/json')) {
+    try {
+      return await request.json();
+    } catch (error) {
+      return {};
+    }
+  }
+
+  if (contentType.includes('application/x-www-form-urlencoded') || contentType.includes('multipart/form-data')) {
+    const formData = await request.formData();
+    const result = {};
+
+    for (const [key, value] of formData.entries()) {
+      result[key] = value;
+    }
+
+    return result;
+  }
+
+  try {
+    return await request.json();
+  } catch (error) {
+    return {};
+  }
+}
+
+function extractPublished(body) {
+  const keys = [
+    'published',
+    'status',
+    'state',
+    'visibility',
+    'visible',
+    'isVisible',
+    'isPublished',
+    'active',
+    'isActive',
+    'show',
+    'display',
+    'shouldDisplay'
+  ];
+
+  for (const key of keys) {
+    if (hasOwn(body, key)) {
+      const interpreted = coerceBooleanInput(body[key]);
+
+      if (interpreted !== null) {
+        return interpreted;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function extractDate(body, keys) {
+  for (const key of keys) {
+    if (hasOwn(body, key)) {
+      return normalizeOptionalDateInput(body[key]);
+    }
+  }
+
+  return undefined;
+}
+
 export async function PATCH(request, context) {
   const { slug } = await context.params;
   const authResponse = requireAuth(request);
@@ -23,19 +96,40 @@ export async function PATCH(request, context) {
     return authResponse;
   }
 
-  const body = await request.json();
+  const body = await readPatchPayload(request);
   const payload = {};
 
-  if (Object.prototype.hasOwnProperty.call(body, 'published')) {
-    payload.published = body.published;
+  const published = extractPublished(body);
+  if (published !== undefined) {
+    payload.published = published;
   }
 
-  if (Object.prototype.hasOwnProperty.call(body, 'displayFrom')) {
-    payload.displayFrom = body.displayFrom;
+  const displayFrom = extractDate(body, [
+    'displayFrom',
+    'startDisplay',
+    'start_at',
+    'startAt',
+    'startDate',
+    'publishFrom',
+    'visibleFrom'
+  ]);
+
+  if (displayFrom !== undefined) {
+    payload.displayFrom = displayFrom;
   }
 
-  if (Object.prototype.hasOwnProperty.call(body, 'displayUntil')) {
-    payload.displayUntil = body.displayUntil;
+  const displayUntil = extractDate(body, [
+    'displayUntil',
+    'endDisplay',
+    'end_at',
+    'endAt',
+    'endDate',
+    'publishUntil',
+    'visibleUntil'
+  ]);
+
+  if (displayUntil !== undefined) {
+    payload.displayUntil = displayUntil;
   }
 
   if (Object.keys(payload).length === 0) {
