@@ -16,7 +16,8 @@ function requireAuth(request) {
   return null;
 }
 
-export async function PATCH(request, { params }) {
+export async function PATCH(request, context) {
+  const { slug } = await context.params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
@@ -42,14 +43,15 @@ export async function PATCH(request, { params }) {
   }
 
   try {
-    const updated = await updateAnnouncement(params.slug, payload);
+    const updated = await updateAnnouncement(slug, payload);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
   }
 }
 
-export async function PUT(request, { params }) {
+export async function PUT(request, context) {
+  const { slug } = await context.params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
@@ -90,7 +92,7 @@ export async function PUT(request, { params }) {
       updates.imageUrl = uploadedImageUrl;
     }
 
-    const updated = await updateAnnouncement(params.slug, updates);
+    const updated = await updateAnnouncement(slug, updates);
     return NextResponse.json(updated);
   } catch (error) {
     if (uploadedImageUrl) {
@@ -104,14 +106,15 @@ export async function PUT(request, { params }) {
   }
 }
 
-export async function DELETE(request, { params }) {
+export async function DELETE(request, context) {
+  const { slug } = await context.params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
   }
 
   try {
-    await deleteAnnouncement(params.slug);
+    await deleteAnnouncement(slug);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
