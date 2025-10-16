@@ -55,68 +55,125 @@ export const metadata = {
 
 const PersonnelCard = ({ name, role, description, initials, variant = 'default' }) => (
   <div
-    className={`relative flex w-full max-w-[260px] flex-col items-center gap-5 rounded-3xl border bg-white/80 px-6 py-8 text-center shadow-[0_18px_45px_rgba(13,106,61,0.08)] backdrop-blur-sm transition-colors ${
+    className={`relative flex w-full max-w-[280px] flex-col items-center gap-6 rounded-[28px] border bg-white/80 px-7 py-9 text-center shadow-[0_24px_60px_rgba(13,106,61,0.08)] backdrop-blur-sm transition-all ${
       variant === 'highlight'
-        ? 'border-primary/40 bg-gradient-to-b from-[#f0fbf4] to-white'
-        : 'border-primary/15'
+        ? 'border-primary/50 bg-gradient-to-b from-[#edf9f2] to-white'
+        : 'border-primary/10'
     }`}
   >
     <div
-      className={`flex h-28 w-28 items-center justify-center rounded-full border-4 border-white text-3xl font-semibold shadow-lg ${
+      className={`flex h-28 w-28 items-center justify-center rounded-full border-4 border-white text-3xl font-semibold shadow-[0_20px_35px_rgba(15,106,61,0.35)] ${
         variant === 'highlight'
-          ? 'bg-gradient-to-br from-[#0e6a3d] via-[#16a34a] to-[#1ec76c] text-white'
-          : 'bg-gradient-to-br from-[#cfe9da] via-[#b2ddc3] to-[#8fcaa9] text-neutral'
+          ? 'bg-gradient-to-br from-[#0f6a3d] via-[#1faa60] to-[#46ce84] text-white'
+          : 'bg-gradient-to-br from-[#d4ecdf] via-[#bfe0cc] to-[#94c6a9] text-neutral'
       }`}
     >
       {initials}
     </div>
     <div className="space-y-3">
-      <p className="text-xs font-semibold tracking-[0.3em] text-primary/70">{role}</p>
+      <p className={`text-[11px] font-semibold uppercase tracking-[0.4em] ${variant === 'highlight' ? 'text-primary/80' : 'text-primary/60'}`}>
+        {role}
+      </p>
       <h3 className="text-xl font-semibold text-neutral">{name}</h3>
-      {description ? (
-        <p className="text-sm leading-relaxed text-slate-600">{description}</p>
-      ) : null}
+      {description ? <p className="text-sm leading-relaxed text-slate-600">{description}</p> : null}
     </div>
+    {variant === 'highlight' ? (
+      <span className="absolute -top-4 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-white shadow-lg">
+        ผู้นำ
+      </span>
+    ) : null}
   </div>
 );
 
 export default function PersonnelStructurePage() {
+  const leftDivisions = structure.divisions.slice(0, 2);
+  const rightDivisions = structure.divisions.slice(2);
+
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
       <main className="flex-1">
-        <section className="relative overflow-hidden bg-gradient-to-b from-[#edf7f1] via-white to-[#d9ecd9] py-24">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(14,106,61,0.12),_transparent_55%)]" />
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#ebf6ef] via-white to-[#daebdc] py-24">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(14,106,61,0.14),_transparent_58%)]" />
+          <div className="absolute inset-y-0 left-1/2 hidden w-[680px] -translate-x-1/2 rounded-full bg-gradient-to-b from-white/20 via-white/60 to-white/20 blur-3xl md:block" />
           <div className="relative mx-auto max-w-6xl px-6">
-            <SectionTitle
-              title="โครงสร้างบุคลากร"
-              subtitle="ถ่ายทอดโครงสร้างการบังคับบัญชาแบบสายตรง ชัดเจน เห็นความเชื่อมโยงของผู้บริหารทุกระดับ"
-            />
-
-            <div className="mt-16 flex flex-col items-center gap-16">
-              <div className="flex flex-col items-center">
-                <PersonnelCard variant="highlight" {...structure.director} />
-                <div className="mt-6 h-16 w-px bg-gradient-to-b from-primary/50 via-primary/30 to-transparent" />
-              </div>
-
-              <div className="flex w-full flex-col items-center">
-                <PersonnelCard {...structure.deputy} />
-                <div className="relative mt-6 flex w-full max-w-4xl flex-col items-center">
-                  <div className="h-14 w-px bg-primary/20" />
-                  <div className="absolute top-14 left-6 right-6 hidden h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent md:block" />
+            <div className="grid gap-12 lg:grid-cols-[1.2fr_minmax(0,0.9fr)] lg:items-start">
+              <div className="space-y-6">
+                <SectionTitle
+                  title="โครงสร้างบุคลากร"
+                  subtitle="ผังสายการบังคับบัญชาที่เรียบง่ายและเป็นมิตรกับผู้ใช้งาน สอดรับกับดีไซน์ของเว็บไซต์"
+                />
+                <p className="text-sm leading-relaxed text-slate-600">
+                  เราออกแบบผังนี้ให้สอดคล้องกับโทนสีและองค์ประกอบของเว็บไซต์ เพื่อให้ผู้อ่านเห็นบทบาทของผู้บริหารแต่ละระดับอย่างชัดเจน
+                  ทั้งยังเน้นความต่อเนื่องของสายการบังคับบัญชา และเชื่อมโยงไปยังภารกิจที่แต่ละฝ่ายรับผิดชอบอยู่ในปัจจุบัน
+                </p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary/70">แนวทางออกแบบ</p>
+                    <p className="mt-2 text-sm text-slate-600">
+                      ใช้จังหวะการ์ดโค้งมนและเส้นเชื่อมบางเพื่อให้ผังดูโปร่ง อ่านง่าย และเหมาะกับอุปกรณ์ทุกขนาดหน้าจอ
+                    </p>
+                  </div>
+                  <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary/70">การจัดกลุ่ม</p>
+                    <p className="mt-2 text-sm text-slate-600">
+                      แยกผู้บริหารสายหลักไว้ตรงกลาง และจับคู่กลุ่มภารกิจซ้าย-ขวาเพื่อลดความหนาแน่น พร้อมไกด์ไลน์สีที่คงโทนสถาบัน
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="relative w-full max-w-5xl pt-12">
-                <div className="pointer-events-none absolute inset-x-6 top-0 hidden h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent md:block" />
-                <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-4">
-                  {structure.divisions.map((division) => (
-                    <div key={division.role} className="relative flex flex-col items-center">
-                      <span className="absolute -top-12 hidden h-12 w-px bg-primary/20 md:block" />
-                      <PersonnelCard {...division} />
+              <div className="relative overflow-hidden rounded-[36px] border border-white/70 bg-white/85 p-10 shadow-[0_35px_90px_rgba(13,106,61,0.12)]">
+                <div className="pointer-events-none absolute -left-24 top-10 hidden h-40 w-40 rounded-full bg-primary/10 blur-3xl lg:block" />
+                <div className="pointer-events-none absolute -right-20 bottom-10 hidden h-32 w-32 rounded-full bg-[#7bc99a]/20 blur-3xl lg:block" />
+                <div className="relative flex flex-col items-center gap-12">
+                  <div className="relative flex flex-col items-center">
+                    <PersonnelCard variant="highlight" {...structure.director} />
+                    <span className="mt-4 h-14 w-px bg-gradient-to-b from-primary/50 via-primary/30 to-transparent" />
+                  </div>
+
+                  <div className="relative flex flex-col items-center gap-6">
+                    <PersonnelCard {...structure.deputy} />
+                    <div className="relative hidden w-full items-center justify-center md:flex">
+                      <span className="absolute top-0 h-px w-[70%] max-w-[420px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                      <span className="h-12 w-px bg-gradient-to-b from-primary/20 to-transparent" />
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="grid w-full gap-8 md:grid-cols-2">
+                    {structure.divisions.map((division) => (
+                      <div key={division.role} className="flex flex-col items-center gap-4">
+                        <span className="hidden h-10 w-px bg-gradient-to-b from-primary/15 to-transparent md:block" />
+                        <PersonnelCard {...division} />
+                      </div>
+                    ))}
+                  </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="mt-20 grid gap-6 rounded-[36px] border border-white/70 bg-white/80 p-10 shadow-[0_28px_60px_rgba(13,106,61,0.08)] lg:grid-cols-[1fr_minmax(0,1.1fr)]">
+              <div className="space-y-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-primary/70">มุมมองสายบังคับบัญชา</p>
+                <h2 className="text-2xl font-semibold text-neutral">จัดวางผู้นำและฝ่ายปฏิบัติให้ชัดเจน</h2>
+                <p className="text-sm leading-relaxed text-slate-600">
+                  ผู้อำนวยการและรองผู้อำนวยการถูกจัดให้อยู่แนวตั้งกลางเพื่อเน้นความเป็นศูนย์กลางการตัดสินใจ
+                  ส่วนฝ่ายภารกิจจัดวางซ้าย-ขวาเพื่อสร้างสมดุลสายตาและง่ายต่อการเทียบบทบาท
+                </p>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2">
+                {[leftDivisions, rightDivisions].map((group, index) => (
+                  <div key={index} className="rounded-3xl border border-primary/10 bg-white/90 p-6 shadow-sm">
+                    <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary/60">{index === 0 ? 'กลุ่มงานสนับสนุน' : 'กลุ่มงานปฏิบัติการ'}</p>
+                    <ul className="mt-4 space-y-3 text-sm text-slate-600">
+                      {group.map((division) => (
+                        <li key={division.role} className="leading-6">
+                          <span className="font-semibold text-primary">{division.name}</span> — {division.role}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
