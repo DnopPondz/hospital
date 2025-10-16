@@ -16,6 +16,7 @@ function requireAuth(request) {
 }
 
 export async function PATCH(request, { params }) {
+  const { slug } = await params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
@@ -23,6 +24,22 @@ export async function PATCH(request, { params }) {
 
   const body = await request.json();
   const payload = {};
+
+  if (Object.prototype.hasOwnProperty.call(body, 'title')) {
+    payload.title = body.title;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'summary')) {
+    payload.summary = body.summary;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'content')) {
+    payload.content = body.content;
+  }
+
+  if (Object.prototype.hasOwnProperty.call(body, 'date')) {
+    payload.date = body.date;
+  }
 
   if (Object.prototype.hasOwnProperty.call(body, 'published')) {
     payload.published = body.published;
@@ -36,12 +53,16 @@ export async function PATCH(request, { params }) {
     payload.displayUntil = body.displayUntil;
   }
 
+  if (Object.prototype.hasOwnProperty.call(body, 'imageUrl')) {
+    payload.imageUrl = body.imageUrl;
+  }
+
   if (Object.keys(payload).length === 0) {
     return NextResponse.json({ message: 'ไม่พบข้อมูลที่ต้องการอัปเดต' }, { status: 400 });
   }
 
   try {
-    const updated = await updateNews(params.slug, payload);
+    const updated = await updateNews(slug, payload);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
@@ -49,13 +70,14 @@ export async function PATCH(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  const { slug } = await params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
   }
 
   try {
-    await deleteNews(params.slug);
+    await deleteNews(slug);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
