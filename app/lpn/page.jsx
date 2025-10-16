@@ -407,7 +407,7 @@ export default function AdminPage() {
             </div>
             <button
               type="submit"
-              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral"
+              className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_24px_-16px_rgba(16,185,129,0.65)] transition hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
             >
               เข้าสู่ระบบ
             </button>
@@ -545,7 +545,7 @@ export default function AdminPage() {
                                   </label>
                                   <button
                                     type="submit"
-                                    className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-xs font-semibold text-white transition hover:bg-neutral disabled:opacity-60"
+                                    className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-[0_10px_18px_-12px_rgba(16,185,129,0.6)] transition hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:opacity-60"
                                     disabled={processing}
                                   >
                                     บันทึกตาราง
@@ -714,7 +714,7 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-semibold text-white shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent hover:from-primary/90 hover:to-accent/90"
+                className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(16,185,129,0.65)] transition hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
               >
                 บันทึก{activeLabel}
               </button>
