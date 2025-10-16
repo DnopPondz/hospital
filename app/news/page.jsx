@@ -78,6 +78,16 @@ export default async function NewsPage() {
                       </span>
                       <span className="mt-1 text-sm font-semibold text-neutral">{newsItem.title}</span>
                       <span className="mt-2 text-xs text-slate-500">{newsItem.summary}</span>
+                      {newsItem.imageUrl && (
+                        <div className="mt-3 overflow-hidden rounded-xl border border-slate-100">
+                          <img
+                            src={newsItem.imageUrl}
+                            alt={newsItem.title}
+                            className="h-32 w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -105,6 +115,16 @@ export default async function NewsPage() {
                         {formatThaiDate(newsItem.date)}
                       </p>
                       <h3 className="mt-3 text-lg font-semibold text-neutral">{newsItem.title}</h3>
+                      {newsItem.imageUrl && (
+                        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-100">
+                          <img
+                            src={newsItem.imageUrl}
+                            alt={newsItem.title}
+                            className="h-40 w-full object-cover"
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
                       <p className="mt-3 text-sm leading-6 text-slate-600">{newsItem.summary}</p>
                       <Link
                         href={`/news/${newsItem.slug}`}

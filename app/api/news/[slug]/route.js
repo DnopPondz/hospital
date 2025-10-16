@@ -36,6 +36,10 @@ export async function PATCH(request, { params }) {
     payload.displayUntil = body.displayUntil;
   }
 
+  if (Object.prototype.hasOwnProperty.call(body, 'imageUrl')) {
+    payload.imageUrl = body.imageUrl;
+  }
+
   if (Object.keys(payload).length === 0) {
     return NextResponse.json({ message: 'ไม่พบข้อมูลที่ต้องการอัปเดต' }, { status: 400 });
   }

@@ -56,6 +56,15 @@ export default async function NewsDetailPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={newsItem.title} subtitle={formatThaiDate(newsItem.date)} />
+              {newsItem.imageUrl && (
+                <div className="mt-6 overflow-hidden rounded-3xl border border-slate-100">
+                  <img
+                    src={newsItem.imageUrl}
+                    alt={newsItem.title}
+                    className="h-96 w-full object-cover"
+                  />
+                </div>
+              )}
               <article className="mt-8 space-y-5 text-base leading-7 text-slate-700">
                 {contentParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
