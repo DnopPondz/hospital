@@ -2,6 +2,8 @@
 
 import { Fragment, useEffect, useState } from 'react';
 
+import RichTextEditor from '@/components/RichTextEditor';
+
 function formatThaiDate(value) {
   try {
     return new Intl.DateTimeFormat('th-TH', {
@@ -15,13 +17,16 @@ function formatThaiDate(value) {
 }
 
 const createDefaultForm = () => ({
+  slug: null,
   title: '',
   summary: '',
   content: '',
   date: '',
   displayFrom: '',
   displayUntil: '',
-  image: null
+  image: null,
+  existingImageUrl: null,
+  removeImage: false
 });
 
 const createFileKey = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -72,6 +77,23 @@ function formatDatetimeLocal(value) {
   const minutes = `${date.getMinutes()}`.padStart(2, '0');
 
   return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function formatDateInput(value) {
+  if (!value) {
+    return '';
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
 }
 
 function getVisibilityState(item) {
@@ -137,6 +159,7 @@ export default function AdminPage() {
   const [fileInputKeys, setFileInputKeys] = useState({ news: createFileKey(), announcements: createFileKey() });
   const [scheduleDrafts, setScheduleDrafts] = useState({ news: {}, announcements: {} });
   const [processingKey, setProcessingKey] = useState(null);
+  const [editingSlug, setEditingSlug] = useState({ news: null, announcements: null });
 
   const fetchContent = async (type) => {
     const endpoint = typeEndpoints[type];
@@ -206,6 +229,7 @@ export default function AdminPage() {
   const resetFormForType = (type) => {
     setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
     setFileInputKeys((previous) => ({ ...previous, [type]: createFileKey() }));
+    setEditingSlug((previous) => ({ ...previous, [type]: null }));
   };
 
   const clearFileSelection = (type) => {
@@ -216,6 +240,66 @@ export default function AdminPage() {
     setFileInputKeys((previous) => ({ ...previous, [type]: createFileKey() }));
   };
 
+  const handleRemoveExistingImage = (type) => {
+    setFormData((previous) => ({
+      ...previous,
+      [type]: { ...previous[type], image: null, removeImage: true }
+    }));
+  };
+
+  const startEditing = (type, item) => {
+    setActiveTab(type);
+    setFormData((previous) => ({
+      ...previous,
+      [type]: {
+        slug: item.slug,
+        title: item.title ?? '',
+        summary: item.summary ?? '',
+        content: item.content ?? '',
+        date: formatDateInput(item.date),
+        displayFrom: formatDatetimeLocal(item.displayFrom),
+        displayUntil: formatDatetimeLocal(item.displayUntil),
+        image: null,
+        existingImageUrl: item.imageUrl ?? null,
+        removeImage: false
+      }
+    }));
+    setFileInputKeys((previous) => ({ ...previous, [type]: createFileKey() }));
+    setEditingSlug((previous) => ({ ...previous, [type]: item.slug }));
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const cancelEditing = (type) => {
+    resetFormForType(type);
+  };
+
+  const handleInlineImageUpload = async (file) => {
+    const payload = new FormData();
+    payload.set('image', file);
+
+    const response = await fetch('/api/uploads', {
+      method: 'POST',
+      body: payload
+    });
+
+    if (!response.ok) {
+      let message = 'ไม่สามารถอัปโหลดรูปภาพได้';
+      try {
+        const data = await response.json();
+        message = data.message ?? message;
+      } catch (error) {
+        // ignore parsing error
+      }
+      setFeedback({ type: 'error', message });
+      throw new Error(message);
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFeedback(null);
@@ -224,40 +308,49 @@ export default function AdminPage() {
     const endpoint = typeEndpoints[type];
     const label = typeLabels[type];
     const currentForm = formData[type];
+    const isEditing = Boolean(currentForm.slug);
+    const requestUrl = isEditing ? `${endpoint}/${currentForm.slug}` : endpoint;
+    const method = isEditing ? 'PUT' : 'POST';
+    const processing = `form:${type}`;
+    setProcessingKey(processing);
 
     const payload = new FormData();
     payload.set('title', currentForm.title);
     payload.set('summary', currentForm.summary);
-    payload.set('content', currentForm.content);
-
-    if (currentForm.date) {
-      payload.set('date', currentForm.date);
-    }
-
-    if (currentForm.displayFrom) {
-      payload.set('displayFrom', currentForm.displayFrom);
-    }
-
-    if (currentForm.displayUntil) {
-      payload.set('displayUntil', currentForm.displayUntil);
-    }
+    payload.set('content', currentForm.content || '');
+    payload.set('date', currentForm.date ?? '');
+    payload.set('displayFrom', currentForm.displayFrom ?? '');
+    payload.set('displayUntil', currentForm.displayUntil ?? '');
 
     if (currentForm.image instanceof File && currentForm.image.size > 0) {
       payload.set('image', currentForm.image);
+    } else if (isEditing && currentForm.removeImage) {
+      payload.set('removeImage', 'true');
     }
 
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      body: payload
-    });
+    try {
+      const response = await fetch(requestUrl, {
+        method,
+        body: payload
+      });
 
-    if (response.ok) {
-      resetFormForType(type);
-      setFeedback({ type: 'success', message: `บันทึก${label}ใหม่เรียบร้อยแล้ว` });
-      await fetchContent(type);
-    } else {
       const data = await response.json();
-      setFeedback({ type: 'error', message: data.message ?? `ไม่สามารถบันทึก${label}ได้` });
+
+      if (!response.ok) {
+        throw new Error(data.message ?? `ไม่สามารถ${isEditing ? 'อัปเดต' : 'บันทึก'}${label}ได้`);
+      }
+
+      resetFormForType(type);
+      setFeedback({
+        type: 'success',
+        message: `${isEditing ? 'อัปเดต' : 'บันทึก'}${label}เรียบร้อยแล้ว`
+      });
+      await fetchContent(type);
+    } catch (error) {
+      const message = error instanceof Error && error.message ? error.message : `ไม่สามารถ${isEditing ? 'อัปเดต' : 'บันทึก'}${label}ได้`;
+      setFeedback({ type: 'error', message });
+    } finally {
+      setProcessingKey(null);
     }
   };
 
@@ -358,6 +451,8 @@ export default function AdminPage() {
   const currentForm = formData[activeTab];
   const currentDrafts = scheduleDrafts[activeTab] ?? {};
   const activeLabel = typeLabels[activeTab];
+  const isEditingCurrent = Boolean(currentForm?.slug);
+  const formProcessing = processingKey === `form:${activeTab}`;
 
   return (
     <div className="min-h-screen bg-[#e6efe9] py-16">
@@ -493,9 +588,17 @@ export default function AdminPage() {
                               <div className="flex flex-wrap items-center gap-2">
                                 <button
                                   type="button"
+                                  onClick={() => startEditing(activeTab, item)}
+                                  className="rounded-full border border-primary/40 bg-white px-3 py-1 font-semibold text-primary transition hover:bg-primary/10"
+                                  disabled={processingKey === `form:${activeTab}`}
+                                >
+                                  แก้ไข
+                                </button>
+                                <button
+                                  type="button"
                                   onClick={() => handleToggleVisibility(activeTab, item.slug, !item.published)}
                                   className="rounded-full border border-slate-200 px-3 py-1 font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
-                                  disabled={processing}
+                                  disabled={processing || processingKey === `form:${activeTab}`}
                                 >
                                   {item.published ? 'ปิดการแสดง' : 'เปิดการแสดง'}
                                 </button>
@@ -503,7 +606,7 @@ export default function AdminPage() {
                                   type="button"
                                   onClick={() => handleDelete(activeTab, item.slug, item.title)}
                                   className="rounded-full border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:border-rose-300 hover:bg-rose-50"
-                                  disabled={processing}
+                                  disabled={processing || processingKey === `form:${activeTab}`}
                                 >
                                   ลบ{activeLabel}
                                 </button>
@@ -569,7 +672,26 @@ export default function AdminPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <h2 className="text-lg font-semibold text-neutral">เพิ่ม{activeLabel}ใหม่</h2>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-lg font-semibold text-neutral">
+                  {isEditingCurrent ? `แก้ไข${activeLabel}` : `เพิ่ม${activeLabel}ใหม่`}
+                </h2>
+                {isEditingCurrent && (
+                  <button
+                    type="button"
+                    onClick={() => cancelEditing(activeTab)}
+                    className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-rose-200 hover:text-rose-500"
+                    disabled={formProcessing}
+                  >
+                    ยกเลิกการแก้ไข
+                  </button>
+                )}
+              </div>
+              {isEditingCurrent && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  กำลังแก้ไข{activeLabel} “{currentForm.title || 'ไม่ระบุหัวข้อ'}”
+                </div>
+              )}
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="title">
                   หัวข้อ{activeLabel}
@@ -619,7 +741,7 @@ export default function AdminPage() {
                     const file = event.target.files?.[0] ?? null;
                     setFormData((previous) => ({
                       ...previous,
-                      [activeTab]: { ...previous[activeTab], image: file }
+                      [activeTab]: { ...previous[activeTab], image: file, removeImage: false }
                     }));
                     if (!file) {
                       setFileInputKeys((previous) => ({ ...previous, [activeTab]: createFileKey() }));
@@ -628,6 +750,41 @@ export default function AdminPage() {
                   className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
                 <p className="mt-2 text-xs text-slate-500">รองรับไฟล์ JPG, PNG หรือ WebP ขนาดไม่เกิน 5 MB</p>
+                {currentForm.existingImageUrl && !currentForm.image && !currentForm.removeImage && (
+                  <div className="mt-3 flex flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-500">
+                    <span className="font-semibold text-slate-600">ภาพปัจจุบัน</span>
+                    <img
+                      src={currentForm.existingImageUrl}
+                      alt={`ภาพประกอบ${activeLabel}เดิม`}
+                      className="max-h-40 w-full rounded-xl object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveExistingImage(activeTab)}
+                      className="self-start rounded-full border border-rose-200 px-3 py-1 font-semibold text-rose-600 transition hover:border-rose-300 hover:bg-rose-50"
+                    >
+                      ลบภาพปัจจุบัน
+                    </button>
+                    <p>หากต้องการเปลี่ยนรูป กรุณาเลือกไฟล์ใหม่หรือกดลบภาพปัจจุบัน</p>
+                  </div>
+                )}
+                {currentForm.removeImage && currentForm.existingImageUrl && !currentForm.image && (
+                  <div className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs text-rose-600">
+                    <span>ระบบจะลบภาพประกอบเดิมเมื่อบันทึก</span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((previous) => ({
+                          ...previous,
+                          [activeTab]: { ...previous[activeTab], removeImage: false }
+                        }))
+                      }
+                      className="rounded-full border border-rose-200 bg-white px-3 py-1 font-semibold text-rose-600 transition hover:border-rose-300 hover:text-rose-500"
+                    >
+                      ยกเลิกการลบภาพ
+                    </button>
+                  </div>
+                )}
                 {currentForm.image && (
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                     <span>
@@ -647,19 +804,19 @@ export default function AdminPage() {
                 <label className="text-sm font-medium text-slate-600" htmlFor="content">
                   เนื้อหา{activeLabel}
                 </label>
-                <textarea
-                  id="content"
-                  required
-                  rows={6}
-                  value={currentForm.content}
-                  onChange={(event) =>
-                    setFormData((previous) => ({
-                      ...previous,
-                      [activeTab]: { ...previous[activeTab], content: event.target.value }
-                    }))
-                  }
-                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
-                />
+                <div className="mt-2">
+                  <RichTextEditor
+                    value={currentForm.content}
+                    onChange={(html) =>
+                      setFormData((previous) => ({
+                        ...previous,
+                        [activeTab]: { ...previous[activeTab], content: html }
+                      }))
+                    }
+                    onUploadImage={handleInlineImageUpload}
+                    placeholder={`พิมพ์เนื้อหา${activeLabel}ที่นี่...`}
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="date">
@@ -714,9 +871,14 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(16,185,129,0.65)] transition hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500"
+                disabled={formProcessing}
+                className="inline-flex items-center justify-center rounded-full bg-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-[0_16px_30px_-18px_rgba(16,185,129,0.65)] transition hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-500 disabled:opacity-60"
               >
-                บันทึก{activeLabel}
+                {formProcessing
+                  ? 'กำลังบันทึก...'
+                  : isEditingCurrent
+                    ? `อัปเดต${activeLabel}`
+                    : `บันทึก${activeLabel}`}
               </button>
             </form>
           </div>

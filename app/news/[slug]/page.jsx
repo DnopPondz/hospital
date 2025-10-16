@@ -44,8 +44,6 @@ export default async function NewsDetailPage({ params }) {
     notFound();
   }
 
-  const contentParagraphs = newsItem.content.split(/\n{2,}/).map((paragraph) => paragraph.trim()).filter(Boolean);
-
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
       <Navbar />
@@ -57,9 +55,9 @@ export default async function NewsDetailPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={newsItem.title} subtitle={formatThaiDate(newsItem.date)} />
-              <article className="mt-8 space-y-6 text-base leading-7 text-slate-700">
+              <article className="rich-text mt-8 text-base leading-7 text-slate-700">
                 {newsItem.imageUrl && (
-                  <div className="relative aspect-[16/9] overflow-hidden rounded-3xl bg-slate-100">
+                  <div className="relative mb-8 aspect-[16/9] overflow-hidden rounded-3xl bg-slate-100">
                     <Image
                       src={newsItem.imageUrl}
                       alt={`ภาพประกอบข่าว ${newsItem.title}`}
@@ -69,9 +67,7 @@ export default async function NewsDetailPage({ params }) {
                     />
                   </div>
                 )}
-                {contentParagraphs.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+                <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
               </article>
             </div>
           </div>
