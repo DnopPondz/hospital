@@ -714,7 +714,7 @@ export default function AdminPage() {
               </div>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral"
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-primary to-accent px-6 py-3 text-sm font-semibold text-white shadow-md transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent hover:from-primary/90 hover:to-accent/90"
               >
                 บันทึก{activeLabel}
               </button>
