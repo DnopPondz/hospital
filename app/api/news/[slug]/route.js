@@ -16,6 +16,7 @@ function requireAuth(request) {
 }
 
 export async function PATCH(request, { params }) {
+  const { slug } = await params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
@@ -61,7 +62,7 @@ export async function PATCH(request, { params }) {
   }
 
   try {
-    const updated = await updateNews(params.slug, payload);
+    const updated = await updateNews(slug, payload);
     return NextResponse.json(updated);
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
@@ -69,13 +70,14 @@ export async function PATCH(request, { params }) {
 }
 
 export async function DELETE(request, { params }) {
+  const { slug } = await params;
   const authResponse = requireAuth(request);
   if (authResponse) {
     return authResponse;
   }
 
   try {
-    await deleteNews(params.slug);
+    await deleteNews(slug);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
