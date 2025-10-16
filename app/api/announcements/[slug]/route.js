@@ -63,7 +63,12 @@ function extractPublished(body) {
     'isActive',
     'show',
     'display',
-    'shouldDisplay'
+    'shouldDisplay',
+    'statusText',
+    'statusLabel',
+    'publishedStatus',
+    'visibilityStatus',
+    'showStatus'
   ];
 
   for (const key of keys) {
