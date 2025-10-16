@@ -742,7 +742,7 @@ export default function AdminDashboard() {
                   <img src={item.imageUrl} alt={item.title} className="h-56 w-full object-cover" loading="lazy" />
                 </div>
               )}
-              <div className="flex flex-wrap gap-3 text-xs text-emerald-700">
+              <div className="flex flex-wrap gap-3 text-xs text-emerald-900">
                 <span className="rounded-full bg-emerald-50 px-3 py-1">
                   เริ่ม {item.displayFrom ? formatThaiDateTime(item.displayFrom) : 'ทันที'}
                 </span>
@@ -847,7 +847,7 @@ export default function AdminDashboard() {
         </div>
       ))}
       {items.length === 0 && (
-        <div className="rounded-3xl border border-dashed border-emerald-200 bg-white p-12 text-center text-sm text-emerald-700">
+        <div className="rounded-3xl border border-dashed border-emerald-200 bg-white p-12 text-center text-sm text-emerald-900">
           ยังไม่มีข้อมูลในหมวดนี้
         </div>
       )}
@@ -878,7 +878,7 @@ export default function AdminDashboard() {
               <h2 className="text-lg font-semibold text-neutral">
                 {editingSlug ? `แก้ไข${typeLabel}` : `เพิ่ม${typeLabel}`}
               </h2>
-              <p className="text-sm text-emerald-700">
+              <p className="text-sm text-emerald-900">
                 กรอกข้อมูลให้ครบถ้วน สามารถอัปโหลดรูปภาพและกำหนดช่วงการเผยแพร่ได้ตามต้องการ
               </p>
               {editingSlug && (
@@ -966,7 +966,7 @@ export default function AdminDashboard() {
             </label>
             <div className="flex flex-col gap-2 text-sm font-semibold text-emerald-800">
               รูปภาพประกอบ
-              <div className="rounded-2xl border border-dashed border-emerald-200 p-4 text-xs text-emerald-700">
+              <div className="rounded-2xl border border-dashed border-emerald-200 p-4 text-xs text-emerald-900">
                 <p>รองรับไฟล์ .jpg .png .gif .webp ขนาดไม่เกิน 5MB</p>
                 <input
                   type="file"
@@ -1003,7 +1003,7 @@ export default function AdminDashboard() {
         <section>
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-neutral">{`${typeLabel}ทั้งหมด`}</h2>
-            <span className="text-sm text-emerald-700">ทั้งหมด {items.length} รายการ</span>
+            <span className="text-sm text-emerald-900">ทั้งหมด {items.length} รายการ</span>
           </div>
           {type === 'news'
             ? renderItems(items, edits, 'news', setEdits)
@@ -1019,22 +1019,22 @@ export default function AdminDashboard() {
     <div className="space-y-10">
       <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
-          <p className="text-sm text-emerald-700">จำนวนข่าวทั้งหมด</p>
+          <p className="text-sm text-emerald-900">จำนวนข่าวทั้งหมด</p>
           <p className="mt-3 text-3xl font-semibold text-neutral">{newsItems.length}</p>
           <p className="mt-2 text-xs text-emerald-600">เผยแพร่ {dashboardSummary.publishedCount} รายการ</p>
         </div>
         <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
-          <p className="text-sm text-emerald-700">จำนวนประกาศทั้งหมด</p>
+          <p className="text-sm text-emerald-900">จำนวนประกาศทั้งหมด</p>
           <p className="mt-3 text-3xl font-semibold text-neutral">{announcementItems.length}</p>
           <p className="mt-2 text-xs text-emerald-600">กำลังแสดง {dashboardSummary.currentlyVisible.length} รายการ</p>
         </div>
         <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
-          <p className="text-sm text-emerald-700">ผู้อ่านทั้งหมด</p>
+          <p className="text-sm text-emerald-900">ผู้อ่านทั้งหมด</p>
           <p className="mt-3 text-3xl font-semibold text-neutral">{logStats.totals.total}</p>
           <p className="mt-2 text-xs text-emerald-600">ข่าว {logStats.totals.news} / ประกาศ {logStats.totals.announcements}</p>
         </div>
         <div className="rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
-          <p className="text-sm text-emerald-700">ตารางเวลาที่รอเผยแพร่</p>
+          <p className="text-sm text-emerald-900">ตารางเวลาที่รอเผยแพร่</p>
           <p className="mt-3 text-3xl font-semibold text-neutral">{dashboardSummary.scheduledItems.length}</p>
           <p className="mt-2 text-xs text-emerald-600">
             รายการแรก {dashboardSummary.scheduledItems[0]?.displayFrom ? formatThaiDateTime(dashboardSummary.scheduledItems[0].displayFrom) : '—'}
@@ -1054,14 +1054,14 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm font-semibold text-neutral">{item.title}</p>
-                    <p className="text-xs text-emerald-700">{getTypeLabel(item.type)}</p>
+                    <p className="text-xs text-emerald-900">{getTypeLabel(item.type)}</p>
                   </div>
                   <p className="text-xs text-emerald-600">เผยแพร่ {formatThaiDateTime(item.date)}</p>
                 </div>
               </li>
             ))}
             {dashboardSummary.latestUpdates.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-700">
+              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-900">
                 ยังไม่มีข้อมูลที่เผยแพร่
               </li>
             )}
@@ -1085,9 +1085,9 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm font-semibold text-neutral">{item.title || item.slug}</p>
-                    <p className="text-xs text-emerald-700">{getTypeLabel(item.type)}</p>
+                    <p className="text-xs text-emerald-900">{getTypeLabel(item.type)}</p>
                   </div>
-                  <div className="text-right text-xs text-emerald-700">
+                  <div className="text-right text-xs text-emerald-900">
                     <p className="font-semibold text-primary">{item.count.toLocaleString('th-TH')} ครั้ง</p>
                     <p className="text-emerald-600">ล่าสุด {formatThaiDateTime(item.lastReadAt)}</p>
                   </div>
@@ -1095,7 +1095,7 @@ export default function AdminDashboard() {
               </li>
             ))}
             {logStats.leaderboard.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-700">
+              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-900">
                 ยังไม่มีข้อมูลการเข้าชม
               </li>
             )}
@@ -1118,14 +1118,14 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm font-semibold text-neutral">{item.title}</p>
-                    <p className="text-xs text-emerald-700">{getTypeLabel(item.type)}</p>
+                    <p className="text-xs text-emerald-900">{getTypeLabel(item.type)}</p>
                   </div>
                   <p className="text-xs text-rose-500">สิ้นสุด {formatThaiDateTime(item.displayUntil)}</p>
                 </div>
               </li>
             ))}
             {dashboardSummary.expiringSoon.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-700">
+              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-900">
                 ไม่มีรายการที่ใกล้หมดกำหนด
               </li>
             )}
@@ -1142,14 +1142,14 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <p className="text-sm font-semibold text-neutral">{item.title}</p>
-                    <p className="text-xs text-emerald-700">{getTypeLabel(item.type)}</p>
+                    <p className="text-xs text-emerald-900">{getTypeLabel(item.type)}</p>
                   </div>
                   <p className="text-xs text-emerald-600">สิ้นสุด {formatThaiDateTime(item.displayUntil)}</p>
                 </div>
               </li>
             ))}
             {dashboardSummary.expiredItems.length === 0 && (
-              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-700">
+              <li className="rounded-2xl border border-dashed border-emerald-100 p-6 text-center text-sm text-emerald-900">
                 ยังไม่มีรายการที่หมดอายุ
               </li>
             )}
@@ -1164,7 +1164,7 @@ export default function AdminDashboard() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold text-neutral">สรุปการเข้าชม</h2>
-            <p className="text-sm text-emerald-700">จำนวนการเข้าชมทั้งหมดจากผู้ใช้งานจริง</p>
+            <p className="text-sm text-emerald-900">จำนวนการเข้าชมทั้งหมดจากผู้ใช้งานจริง</p>
           </div>
           <button
             type="button"
@@ -1177,15 +1177,15 @@ export default function AdminDashboard() {
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl border border-emerald-100 p-4 text-center">
-            <p className="text-xs text-emerald-700">จำนวนรวม</p>
+            <p className="text-xs text-emerald-900">จำนวนรวม</p>
             <p className="mt-2 text-2xl font-semibold text-neutral">{logStats.totals.total}</p>
           </div>
           <div className="rounded-2xl border border-emerald-100 p-4 text-center">
-            <p className="text-xs text-emerald-700">ข่าว</p>
+            <p className="text-xs text-emerald-900">ข่าว</p>
             <p className="mt-2 text-2xl font-semibold text-neutral">{logStats.totals.news}</p>
           </div>
           <div className="rounded-2xl border border-emerald-100 p-4 text-center">
-            <p className="text-xs text-emerald-700">ประกาศ</p>
+            <p className="text-xs text-emerald-900">ประกาศ</p>
             <p className="mt-2 text-2xl font-semibold text-neutral">{logStats.totals.announcements}</p>
           </div>
         </div>
@@ -1208,14 +1208,14 @@ export default function AdminDashboard() {
               {logStats.leaderboard.map((item) => (
                 <tr key={`${item.type}-${item.slug}`} className="hover:bg-emerald-50">
                   <td className="px-4 py-3 text-neutral">{item.title || item.slug}</td>
-                  <td className="px-4 py-3 text-emerald-700">{getTypeLabel(item.type)}</td>
+                  <td className="px-4 py-3 text-emerald-900">{getTypeLabel(item.type)}</td>
                   <td className="px-4 py-3 text-primary">{item.count.toLocaleString('th-TH')}</td>
                   <td className="px-4 py-3 text-emerald-600">{formatThaiDateTime(item.lastReadAt)}</td>
                 </tr>
               ))}
               {logStats.leaderboard.length === 0 && (
                 <tr>
-                  <td colSpan="4" className="px-4 py-6 text-center text-sm text-emerald-700">
+                  <td colSpan="4" className="px-4 py-6 text-center text-sm text-emerald-900">
                     ยังไม่มีข้อมูลการเข้าชม
                   </td>
                 </tr>
@@ -1240,13 +1240,13 @@ export default function AdminDashboard() {
               {logStats.recent.map((item, index) => (
                 <tr key={`${item.type}-${item.slug}-${index}`} className="hover:bg-emerald-50">
                   <td className="px-4 py-3 text-neutral">{item.title || item.slug}</td>
-                  <td className="px-4 py-3 text-emerald-700">{getTypeLabel(item.type)}</td>
+                  <td className="px-4 py-3 text-emerald-900">{getTypeLabel(item.type)}</td>
                   <td className="px-4 py-3 text-emerald-600">{formatThaiDateTime(item.readAt)}</td>
                 </tr>
               ))}
               {logStats.recent.length === 0 && (
                 <tr>
-                  <td colSpan="3" className="px-4 py-6 text-center text-sm text-emerald-700">
+                  <td colSpan="3" className="px-4 py-6 text-center text-sm text-emerald-900">
                     ยังไม่มีการเข้าชมล่าสุด
                   </td>
                 </tr>
@@ -1259,8 +1259,8 @@ export default function AdminDashboard() {
   );
   if (checkingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-emerald-50 to-emerald-100">
-        <div className="rounded-3xl border border-emerald-100 bg-white px-10 py-8 text-center shadow-sm">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-emerald-50 to-emerald-200">
+        <div className="rounded-3xl border border-emerald-200 bg-white px-10 py-8 text-center shadow-md">
           <p className="text-sm font-semibold text-neutral">กำลังตรวจสอบสิทธิ์การใช้งาน...</p>
         </div>
       </div>
@@ -1269,33 +1269,33 @@ export default function AdminDashboard() {
 
   if (!authenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-emerald-50 to-emerald-100">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-white via-emerald-50 to-emerald-200">
         <form
           onSubmit={handleLogin}
-          className="w-full max-w-md space-y-6 rounded-3xl border border-emerald-100 bg-white/90 p-10 shadow-xl backdrop-blur"
+          className="w-full max-w-md space-y-6 rounded-3xl border border-emerald-200 bg-white/95 p-10 shadow-xl backdrop-blur"
         >
           <div className="space-y-2 text-center">
             <h1 className="text-2xl font-semibold text-neutral">Admin Console</h1>
-            <p className="text-sm text-emerald-700">เข้าสู่ระบบเพื่อจัดการข่าวและประกาศ</p>
+            <p className="text-sm text-emerald-900">เข้าสู่ระบบเพื่อจัดการข่าวและประกาศ</p>
           </div>
           <div className="space-y-4">
-            <label className="flex flex-col gap-2 text-sm font-semibold text-emerald-800">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-emerald-900">
               ชื่อผู้ใช้
               <input
                 type="text"
                 value={loginForm.username}
                 onChange={(event) => setLoginForm((prev) => ({ ...prev, username: event.target.value }))}
-                className="rounded-full border border-emerald-200 px-4 py-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="rounded-full border border-emerald-300 px-4 py-3 text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 placeholder="admin"
               />
             </label>
-            <label className="flex flex-col gap-2 text-sm font-semibold text-emerald-800">
+            <label className="flex flex-col gap-2 text-sm font-semibold text-emerald-900">
               รหัสผ่าน
               <input
                 type="password"
                 value={loginForm.password}
                 onChange={(event) => setLoginForm((prev) => ({ ...prev, password: event.target.value }))}
-                className="rounded-full border border-emerald-200 px-4 py-3 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="rounded-full border border-emerald-300 px-4 py-3 text-neutral focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 placeholder="••••••"
               />
             </label>
@@ -1303,7 +1303,7 @@ export default function AdminDashboard() {
           {loginError && <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-600">{loginError}</p>}
           <button
             type="submit"
-            className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:text-white/80"
+            className="w-full rounded-full bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:bg-emerald-200 disabled:text-white/80"
             disabled={isLoading('login')}
           >
             เข้าสู่ระบบ
@@ -1314,25 +1314,31 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-white via-emerald-50 to-emerald-100">
-      <aside className="hidden w-72 flex-col border-r border-emerald-100 bg-gradient-to-b from-white via-emerald-50/80 to-white px-6 py-8 lg:flex">
+    <div className="flex min-h-screen bg-gradient-to-br from-white via-emerald-50 to-emerald-200">
+      <aside className="hidden w-72 flex-col border-r border-emerald-200 bg-gradient-to-b from-white via-emerald-50 to-emerald-100 px-6 py-8 lg:flex">
         <div className="mb-8 space-y-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-primary">ThaiGov Portal</p>
           <h2 className="text-xl font-semibold text-neutral">ศูนย์จัดการเนื้อหา</h2>
         </div>
-        <nav className="flex-1 space-y-1">
+        <nav className="flex-1 space-y-2">
           {sidebarItems.map((item) => (
             <button
               key={item.key}
               type="button"
               onClick={() => setActiveSection(item.key)}
-              className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
-                activeSection === item.key ? 'bg-primary text-white shadow-sm' : 'text-emerald-800 hover:bg-emerald-50'
+              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm font-semibold shadow-sm transition ${
+                activeSection === item.key
+                  ? 'border-transparent bg-primary text-white shadow-lg ring-2 ring-accent/50'
+                  : 'border-emerald-200 bg-white text-emerald-900 hover:border-emerald-300 hover:bg-emerald-50'
               }`}
             >
               <span>{item.label}</span>
               {item.count !== null && (
-                <span className={`rounded-full px-2 py-0.5 text-xs ${activeSection === item.key ? 'bg-white/20' : 'bg-emerald-100 text-emerald-800'}`}>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                    activeSection === item.key ? 'bg-white/30 text-white' : 'bg-accent/20 text-primary'
+                  }`}
+                >
                   {item.count}
                 </span>
               )}
@@ -1342,7 +1348,7 @@ export default function AdminDashboard() {
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-auto rounded-full border border-emerald-200 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-50"
+          className="mt-auto rounded-full border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
           disabled={isLoading('logout')}
         >
           ออกจากระบบ
@@ -1350,17 +1356,17 @@ export default function AdminDashboard() {
       </aside>
 
       <div className="flex flex-1 flex-col">
-        <header className="border-b border-emerald-100 bg-white/90 backdrop-blur">
+        <header className="border-b border-emerald-200 bg-white/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-neutral">{sectionTitle}</h1>
-              <p className="text-sm text-emerald-700">{sectionDescription}</p>
+              <p className="text-sm text-emerald-900">{sectionDescription}</p>
             </div>
             <div className="flex items-center gap-3 lg:hidden">
               <select
                 value={activeSection}
                 onChange={(event) => setActiveSection(event.target.value)}
-                className="rounded-full border border-emerald-200 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm text-emerald-800"
+                className="rounded-full border border-emerald-300 bg-white px-4 py-2 text-sm text-emerald-800 shadow-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
               >
                 {sidebarItems.map((item) => (
                   <option key={item.key} value={item.key}>
@@ -1371,7 +1377,7 @@ export default function AdminDashboard() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-full border border-emerald-200 px-4 py-2 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-50"
+                className="rounded-full border border-emerald-200 px-4 py-2 text-xs font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-50 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 disabled={isLoading('logout')}
               >
                 ออกจากระบบ
@@ -1380,7 +1386,7 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-white via-emerald-50 to-emerald-100">
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-white via-emerald-50 to-emerald-200">
           <div className="mx-auto max-w-6xl px-6 py-10">
             {activeSection === 'dashboard' && renderDashboard()}
             {activeSection === 'news' && renderManageSection('news')}

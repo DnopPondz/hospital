@@ -7,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#0E6A3D',
-        accent: '#68C28B',
-        neutral: '#0A3A24'
+        primary: '#059669',
+        accent: '#34D399',
+        neutral: '#064E3B'
       },
       fontFamily: {
         sans: ['"Noto Sans Thai"', 'sans-serif']
