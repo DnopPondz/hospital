@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Navbar from '@/components/Navbar';
@@ -72,7 +73,21 @@ export default async function NewsPage() {
                 <h2 className="text-lg font-semibold text-neutral">ข่าวเด่นประจำวัน</h2>
                 <ul className="space-y-4 text-sm text-slate-600">
                   {newsItems.slice(0, 4).map((newsItem) => (
-                    <li key={newsItem.slug} className="flex flex-col rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm">
+                    <li
+                      key={newsItem.slug}
+                      className="flex flex-col rounded-2xl border border-white/60 bg-white/80 p-4 shadow-sm"
+                    >
+                      {newsItem.imageUrl && (
+                        <div className="relative mb-3 aspect-[16/9] overflow-hidden rounded-xl bg-slate-100">
+                          <Image
+                            src={newsItem.imageUrl}
+                            alt={`ภาพประกอบข่าว ${newsItem.title}`}
+                            fill
+                            sizes="(min-width: 1024px) 240px, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <span className="text-xs font-semibold uppercase tracking-widest text-primary/70">
                         {formatThaiDate(newsItem.date)}
                       </span>
@@ -101,6 +116,17 @@ export default async function NewsPage() {
                 <div className="grid gap-6 lg:grid-cols-3">
                   {grouped[key].items.map((newsItem) => (
                     <article key={newsItem.slug} className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm">
+                      {newsItem.imageUrl && (
+                        <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
+                          <Image
+                            src={newsItem.imageUrl}
+                            alt={`ภาพประกอบข่าว ${newsItem.title}`}
+                            fill
+                            sizes="(min-width: 1280px) 320px, (min-width: 768px) 45vw, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">
                         {formatThaiDate(newsItem.date)}
                       </p>

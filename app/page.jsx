@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Navbar from '@/components/Navbar';
@@ -144,6 +145,18 @@ export default async function HomePage() {
                 <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">ข่าวเด่นประจำวัน</p>
                 {featuredNews ? (
                   <>
+                    {featuredNews.imageUrl && (
+                      <div className="relative mb-4 aspect-[16/9] overflow-hidden rounded-3xl bg-slate-100">
+                        <Image
+                          src={featuredNews.imageUrl}
+                          alt={`ภาพประกอบข่าว ${featuredNews.title}`}
+                          fill
+                          sizes="(min-width: 1024px) 480px, 100vw"
+                          className="object-cover"
+                          priority
+                        />
+                      </div>
+                    )}
                     <p className="text-sm font-semibold text-neutral">{formatThaiDate(featuredNews.date)}</p>
                     <h2 className="text-xl font-semibold text-neutral">{featuredNews.title}</h2>
                     <p className="text-sm leading-6 text-slate-600">{featuredNews.summary}</p>
@@ -165,8 +178,19 @@ export default async function HomePage() {
                   <h3 className="text-sm font-semibold text-neutral">อัปเดตอื่น ๆ</h3>
                   <ul className="mt-4 space-y-3 text-sm text-slate-600">
                     {secondaryNews.map((newsItem) => (
-                      <li key={newsItem.slug} className="flex items-start justify-between gap-4">
-                        <div>
+                      <li key={newsItem.slug} className="flex items-center gap-4">
+                        {newsItem.imageUrl && (
+                          <div className="relative h-14 w-20 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                            <Image
+                              src={newsItem.imageUrl}
+                              alt={`ภาพประกอบข่าว ${newsItem.title}`}
+                              fill
+                              sizes="80px"
+                              className="object-cover"
+                            />
+                          </div>
+                        )}
+                        <div className="flex-1">
                           <p className="text-xs text-primary/70">{formatThaiDate(newsItem.date)}</p>
                           <p className="font-medium text-neutral">{newsItem.title}</p>
                         </div>
@@ -208,6 +232,17 @@ export default async function HomePage() {
                       key={announcement.slug}
                       className="rounded-3xl border border-[#dcece2] bg-white/90 p-6 shadow-sm transition hover:border-primary/60"
                     >
+                      {announcement.imageUrl && (
+                        <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
+                          <Image
+                            src={announcement.imageUrl}
+                            alt={`ภาพประกอบประกาศ ${announcement.title}`}
+                            fill
+                            sizes="(min-width: 1024px) 320px, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <p className="text-xs font-semibold uppercase tracking-widest text-primary/70">{formatThaiDate(announcement.date)}</p>
                       <h3 className="mt-3 text-lg font-semibold text-neutral">{announcement.title}</h3>
                       <p className="mt-3 text-sm leading-6 text-slate-600">{announcement.summary}</p>

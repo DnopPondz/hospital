@@ -20,8 +20,11 @@ const createDefaultForm = () => ({
   content: '',
   date: '',
   displayFrom: '',
-  displayUntil: ''
+  displayUntil: '',
+  image: null
 });
+
+const createFileKey = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
 const typeLabels = {
   news: 'ข่าว',
@@ -131,6 +134,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('news');
   const [items, setItems] = useState({ news: [], announcements: [] });
   const [formData, setFormData] = useState({ news: createDefaultForm(), announcements: createDefaultForm() });
+  const [fileInputKeys, setFileInputKeys] = useState({ news: createFileKey(), announcements: createFileKey() });
   const [scheduleDrafts, setScheduleDrafts] = useState({ news: {}, announcements: {} });
   const [processingKey, setProcessingKey] = useState(null);
 
@@ -199,6 +203,19 @@ export default function AdminPage() {
     setFeedback({ type: 'success', message: 'ออกจากระบบแล้ว' });
   };
 
+  const resetFormForType = (type) => {
+    setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
+    setFileInputKeys((previous) => ({ ...previous, [type]: createFileKey() }));
+  };
+
+  const clearFileSelection = (type) => {
+    setFormData((previous) => ({
+      ...previous,
+      [type]: { ...previous[type], image: null }
+    }));
+    setFileInputKeys((previous) => ({ ...previous, [type]: createFileKey() }));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setFeedback(null);
@@ -208,21 +225,34 @@ export default function AdminPage() {
     const label = typeLabels[type];
     const currentForm = formData[type];
 
-    const payload = {
-      ...currentForm,
-      date: currentForm.date || null,
-      displayFrom: currentForm.displayFrom || null,
-      displayUntil: currentForm.displayUntil || null
-    };
+    const payload = new FormData();
+    payload.set('title', currentForm.title);
+    payload.set('summary', currentForm.summary);
+    payload.set('content', currentForm.content);
+
+    if (currentForm.date) {
+      payload.set('date', currentForm.date);
+    }
+
+    if (currentForm.displayFrom) {
+      payload.set('displayFrom', currentForm.displayFrom);
+    }
+
+    if (currentForm.displayUntil) {
+      payload.set('displayUntil', currentForm.displayUntil);
+    }
+
+    if (currentForm.image instanceof File && currentForm.image.size > 0) {
+      payload.set('image', currentForm.image);
+    }
 
     const response = await fetch(endpoint, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: payload
     });
 
     if (response.ok) {
-      setFormData((previous) => ({ ...previous, [type]: createDefaultForm() }));
+      resetFormForType(type);
       setFeedback({ type: 'success', message: `บันทึก${label}ใหม่เรียบร้อยแล้ว` });
       await fetchContent(type);
     } else {
@@ -575,6 +605,43 @@ export default function AdminPage() {
                   }
                   className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-slate-600" htmlFor={`${activeTab}-image`}>
+                  ภาพประกอบ{activeLabel} (ไม่บังคับ)
+                </label>
+                <input
+                  key={fileInputKeys[activeTab]}
+                  id={`${activeTab}-image`}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    setFormData((previous) => ({
+                      ...previous,
+                      [activeTab]: { ...previous[activeTab], image: file }
+                    }));
+                    if (!file) {
+                      setFileInputKeys((previous) => ({ ...previous, [activeTab]: createFileKey() }));
+                    }
+                  }}
+                  className="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                <p className="mt-2 text-xs text-slate-500">รองรับไฟล์ JPG, PNG หรือ WebP ขนาดไม่เกิน 5 MB</p>
+                {currentForm.image && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span>
+                      ไฟล์ที่เลือก: {currentForm.image.name} ({Math.ceil(currentForm.image.size / 1024)} KB)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => clearFileSelection(activeTab)}
+                      className="rounded-full border border-slate-200 px-2 py-1 font-semibold text-slate-600 transition hover:border-primary hover:text-primary"
+                    >
+                      ลบไฟล์
+                    </button>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-600" htmlFor="content">
