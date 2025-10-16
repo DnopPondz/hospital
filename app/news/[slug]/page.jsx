@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import { getNewsBySlug } from '@/lib/news';
+import { recordReadEvent } from '@/lib/logs';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,8 @@ export default async function NewsDetailPage({ params }) {
     notFound();
   }
 
+  await recordReadEvent({ type: 'news', slug: newsItem.slug, title: newsItem.title });
+
   const contentParagraphs = newsItem.content.split(/\n{2,}/).map((paragraph) => paragraph.trim()).filter(Boolean);
 
   return (
@@ -56,6 +59,15 @@ export default async function NewsDetailPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={newsItem.title} subtitle={formatThaiDate(newsItem.date)} />
+              {newsItem.imageUrl && (
+                <div className="mt-6 overflow-hidden rounded-3xl border border-slate-100">
+                  <img
+                    src={newsItem.imageUrl}
+                    alt={newsItem.title}
+                    className="h-96 w-full object-cover"
+                  />
+                </div>
+              )}
               <article className="mt-8 space-y-5 text-base leading-7 text-slate-700">
                 {contentParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>

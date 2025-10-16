@@ -5,6 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SectionTitle from '@/components/SectionTitle';
 import { getAnnouncementBySlug } from '@/lib/announcements';
+import { recordReadEvent } from '@/lib/logs';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,12 @@ export default async function AnnouncementPage({ params }) {
     notFound();
   }
 
+  await recordReadEvent({
+    type: 'announcement',
+    slug: announcement.slug,
+    title: announcement.title
+  });
+
   const contentParagraphs = announcement.content.split(/\n{2,}/).map((paragraph) => paragraph.trim()).filter(Boolean);
 
   return (
@@ -56,6 +63,15 @@ export default async function AnnouncementPage({ params }) {
             </Link>
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={announcement.title} subtitle={formatThaiDate(announcement.date)} />
+              {announcement.imageUrl && (
+                <div className="mt-6 overflow-hidden rounded-3xl border border-slate-100">
+                  <img
+                    src={announcement.imageUrl}
+                    alt={announcement.title}
+                    className="h-96 w-full object-cover"
+                  />
+                </div>
+              )}
               <article className="mt-8 space-y-5 text-base leading-7 text-slate-700">
                 {contentParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>

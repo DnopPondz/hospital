@@ -19,10 +19,10 @@ export async function POST(request) {
     return NextResponse.json({ message: 'ไม่ได้รับอนุญาต' }, { status: 401 });
   }
 
-  const { title, summary, content, date, displayFrom, displayUntil } = await request.json();
+  const { title, summary, content, date, displayFrom, displayUntil, imageUrl } = await request.json();
 
   try {
-    const newsItem = await addNews({ title, summary, content, date, displayFrom, displayUntil });
+    const newsItem = await addNews({ title, summary, content, date, displayFrom, displayUntil, imageUrl });
     return NextResponse.json(newsItem, { status: 201 });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 400 });
