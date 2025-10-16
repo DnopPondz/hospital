@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -60,11 +61,14 @@ export default async function NewsDetailPage({ params }) {
             <div className="mt-6 rounded-3xl border border-slate-100 bg-white p-10 shadow-sm">
               <SectionTitle title={newsItem.title} subtitle={formatThaiDate(newsItem.date)} />
               {newsItem.imageUrl && (
-                <div className="mt-6 overflow-hidden rounded-3xl border border-slate-100">
-                  <img
+                <div className="relative mt-6 h-96 overflow-hidden rounded-3xl border border-slate-100">
+                  <Image
                     src={newsItem.imageUrl}
                     alt={newsItem.title}
-                    className="h-96 w-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1024px"
+                    priority
                   />
                 </div>
               )}

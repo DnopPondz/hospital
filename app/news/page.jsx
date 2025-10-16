@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import Navbar from '@/components/Navbar';
@@ -79,12 +80,13 @@ export default async function NewsPage() {
                       <span className="mt-1 text-sm font-semibold text-neutral">{newsItem.title}</span>
                       <span className="mt-2 text-xs text-slate-500">{newsItem.summary}</span>
                       {newsItem.imageUrl && (
-                        <div className="mt-3 overflow-hidden rounded-xl border border-slate-100">
-                          <img
+                        <div className="relative mt-3 h-32 overflow-hidden rounded-xl border border-slate-100">
+                          <Image
                             src={newsItem.imageUrl}
                             alt={newsItem.title}
-                            className="h-32 w-full object-cover"
-                            loading="lazy"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
                           />
                         </div>
                       )}
@@ -116,12 +118,13 @@ export default async function NewsPage() {
                       </p>
                       <h3 className="mt-3 text-lg font-semibold text-neutral">{newsItem.title}</h3>
                       {newsItem.imageUrl && (
-                        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-100">
-                          <img
+                        <div className="relative mt-4 h-40 overflow-hidden rounded-2xl border border-slate-100">
+                          <Image
                             src={newsItem.imageUrl}
                             alt={newsItem.title}
-                            className="h-40 w-full object-cover"
-                            loading="lazy"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 384px"
                           />
                         </div>
                       )}

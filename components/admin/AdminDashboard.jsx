@@ -1,7 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 const emptyForm = {
   title: '',
@@ -213,7 +214,7 @@ export default function AdminDashboard() {
     fetchCollections();
   }, [authenticated]);
 
-  const refreshLogs = async () => {
+  const refreshLogs = useCallback(async () => {
     if (!authenticated) {
       return;
     }
@@ -239,19 +240,19 @@ export default function AdminDashboard() {
     } finally {
       setLogsLoading(false);
     }
-  };
+  }, [authenticated]);
 
   useEffect(() => {
     if (authenticated) {
       refreshLogs();
     }
-  }, [authenticated]);
+  }, [authenticated, refreshLogs]);
 
   useEffect(() => {
     if (authenticated && activeSection === 'logs') {
       refreshLogs();
     }
-  }, [activeSection, authenticated]);
+  }, [activeSection, authenticated, refreshLogs]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -738,8 +739,14 @@ export default function AdminDashboard() {
               <p className="text-sm text-emerald-800">{item.summary}</p>
               <p className="text-xs text-emerald-600">เผยแพร่เมื่อ: {formatThaiDateTime(item.date)}</p>
               {item.imageUrl && (
-                <div className="overflow-hidden rounded-2xl border border-emerald-50">
-                  <img src={item.imageUrl} alt={item.title} className="h-56 w-full object-cover" loading="lazy" />
+                <div className="relative h-56 overflow-hidden rounded-2xl border border-emerald-50">
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 512px"
+                  />
                 </div>
               )}
               <div className="flex flex-wrap gap-3 text-xs text-emerald-900">
@@ -976,8 +983,14 @@ export default function AdminDashboard() {
                   disabled={isLoading(formImageKey)}
                 />
                 {formState.imageUrl && (
-                  <div className="mt-3 overflow-hidden rounded-xl border border-emerald-100">
-                    <img src={formState.imageUrl} alt="ตัวอย่างรูปภาพ" className="h-40 w-full object-cover" />
+                  <div className="relative mt-3 h-40 overflow-hidden rounded-xl border border-emerald-100">
+                    <Image
+                      src={formState.imageUrl}
+                      alt="ตัวอย่างรูปภาพ"
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 384px"
+                    />
                   </div>
                 )}
               </div>
