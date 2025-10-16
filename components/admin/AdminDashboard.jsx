@@ -1328,7 +1328,7 @@ export default function AdminDashboard() {
               onClick={() => setActiveSection(item.key)}
               className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm font-semibold shadow-sm transition ${
                 activeSection === item.key
-                  ? 'border-transparent bg-primary text-white shadow-lg ring-2 ring-accent/50'
+                  ? 'border-transparent bg-primary text-black shadow-lg ring-2 ring-accent/50'
                   : 'border-emerald-200 bg-white text-emerald-900 hover:border-emerald-300 hover:bg-emerald-50'
               }`}
             >
