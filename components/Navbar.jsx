@@ -12,31 +12,35 @@ const menuItems = [
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 border-b border-[#c3d9cc] bg-white/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="relative h-12 w-12 overflow-hidden rounded-full border border-[#d8e7de] bg-white shadow-sm">
-            <Image src="/moph-logo.svg" alt="ตรากระทรวงสาธารณสุข" fill priority sizes="48px" className="object-contain p-1.5" />
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-white/80">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="flex items-center gap-4">
+          <div className="relative h-10 w-10 overflow-hidden rounded-full shadow-sm ring-1 ring-slate-100">
+            <Image src="/moph-logo.svg" alt="ตรากระทรวงสาธารณสุข" fill priority sizes="40px" className="object-contain p-1" />
           </div>
-          <div>
-            <p className="text-xs uppercase tracking-widest text-primary/70">Ministry of Public Health</p>
-            <p className="text-lg font-semibold text-neutral">สำนักงานราชการกลาง</p>
+          <div className="flex flex-col">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Ministry of Public Health</p>
+            <p className="text-lg font-bold text-neutral leading-tight">สำนักงานราชการกลาง</p>
           </div>
         </div>
-        <nav className="hidden items-center gap-8 text-sm font-medium text-neutral md:flex">
+
+        <nav className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
           {menuItems.map((item) => (
-            <Link key={item.href} href={item.href} className="group relative transition hover:text-primary">
+            <Link key={item.href} href={item.href} className="group relative py-2 transition hover:text-primary">
               {item.label}
-              <span className="pointer-events-none absolute bottom-[-8px] left-0 h-[2px] w-0 bg-primary transition-all duration-300 ease-in-out group-hover:w-full" />
+              <span className="absolute bottom-0 left-0 h-0.5 w-0 bg-primary transition-all duration-300 ease-out group-hover:w-full" />
             </Link>
           ))}
         </nav>
-        {/* <a
-          href="#contact"
-          className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-white shadow-card transition hover:bg-neutral"
-        >
-          เข้าสู่ระบบบริการ
-        </a> */}
+
+        <div className="hidden md:block">
+             <Link
+              href="/contact"
+              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-800 hover:shadow focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+            >
+              ติดต่อเจ้าหน้าที่
+            </Link>
+        </div>
       </div>
     </header>
   );

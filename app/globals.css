@@ -1,11 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+
+@theme {
+    --color-primary: #0f766e;
+    --color-secondary: #0e7490;
+    --color-accent: #14b8a6;
+    --color-neutral: #1e293b;
+    --color-background: #f8fafc;
+
+    --shadow-card: 0 10px 30px -10px rgba(15, 118, 110, 0.15);
+    --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+
+    --font-sans: "Noto Sans Thai", sans-serif;
+}
 
 /* ✅ ให้ Tailwind รู้จักยูทิลิตี้ทั้งหมด */
-@reference "tailwindcss";
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 :root {
   color-scheme: light;
@@ -13,12 +23,32 @@
 
 body {
   min-height: 100vh;
+  @apply bg-slate-50 text-slate-600;
 }
 
 a {
   text-decoration: none;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  @apply font-sans text-slate-800;
+}
+
 .section-wrapper {
-  @apply relative overflow-hidden rounded-[40px] border border-[#d8e7de] bg-white/75 shadow-sm;
+  @apply relative overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md;
+}
+
+/* Custom Scrollbar for a cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
